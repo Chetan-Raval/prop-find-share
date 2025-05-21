@@ -5,8 +5,13 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import Header from "@/components/Header";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const DashboardLayout = () => {
   const { user } = useAuth();
@@ -43,34 +48,32 @@ const DashboardLayout = () => {
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex flex-1 relative">
-        {/* Mobile sidebar toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-2 left-2 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        {/* Mobile sidebar with Sheet component */}
+        <div className="block lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 left-2 z-40"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-[240px] border-r">
+              <DashboardSidebar />
+            </SheetContent>
+          </Sheet>
+        </div>
 
-        {/* Sidebar */}
-        <div className={`
-          fixed inset-y-0 left-0 z-30 w-64 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-        `}>
+        {/* Desktop sidebar */}
+        <div className="hidden lg:block fixed inset-y-0 left-0 z-30 w-64 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0">
           <DashboardSidebar />
         </div>
 
-        {/* Backdrop for mobile */}
-        {sidebarOpen && (
-          <div 
-            className="fixed inset-0 bg-black/20 z-20 lg:hidden" 
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-
         {/* Main content */}
-        <main className={`flex-1 p-4 md:p-6 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-0" : ""}`}>
+        <main className="flex-1 p-4 md:p-6 transition-all duration-300 ease-in-out">
           <div className="py-4 px-1 md:px-0">
             <Outlet />
           </div>
