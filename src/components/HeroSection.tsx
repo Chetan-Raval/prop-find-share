@@ -16,18 +16,18 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="hero-section flex items-center justify-center">
-      <div className="container px-4 py-16 text-center md:py-24">
-        <h1 className="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">
+    <div className="hero-section flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-800">
+      <div className="container px-4 py-12 text-center md:py-20 lg:py-24">
+        <h1 className="mb-4 text-3xl font-bold md:text-5xl lg:text-6xl">
           Find Your Perfect Property
         </h1>
-        <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100 md:text-xl">
+        <p className="mx-auto mb-8 max-w-2xl text-base text-blue-100 md:text-lg lg:text-xl">
           Browse thousands of properties for sale and rent from trusted vendors
         </p>
 
         <form 
           onSubmit={handleSearch}
-          className="mx-auto flex max-w-3xl flex-col gap-4 rounded-lg bg-white p-4 shadow-lg md:flex-row"
+          className="mx-auto flex max-w-3xl flex-col gap-4 rounded-xl bg-white p-4 shadow-lg sm:p-6 md:flex-row"
         >
           <div className="flex-1">
             <Input
@@ -53,8 +53,21 @@ const HeroSection = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="h-12">Search</Button>
+          <Button type="submit" className="h-12" size="lg">Search</Button>
         </form>
+        
+        <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs text-blue-100 md:text-sm">
+          <span>Popular Searches:</span>
+          <button onClick={() => navigate("/properties?search=apartment&type=hire")} className="hover:text-white">
+            Apartments for Rent
+          </button>
+          <button onClick={() => navigate("/properties?search=house&type=sale")} className="hover:text-white">
+            Houses for Sale
+          </button>
+          <button onClick={() => navigate("/properties?search=luxury")} className="hover:text-white">
+            Luxury Properties
+          </button>
+        </div>
       </div>
     </div>
   );

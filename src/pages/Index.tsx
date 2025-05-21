@@ -7,22 +7,22 @@ import { Home, MessageSquare, User } from "lucide-react";
 
 const Index = () => {
   return (
-    <div>
+    <div className="fade-in">
       <HeroSection />
       <FeaturedProperties />
       
       {/* How it works section */}
-      <section className="bg-secondary/50 py-16">
+      <section className="bg-secondary/50 py-12 md:py-16">
         <div className="container px-4">
           <div className="mb-10 text-center">
-            <h2 className="mb-2 text-3xl font-bold">How It Works</h2>
-            <p className="text-muted-foreground">
+            <h2 className="mb-2 text-3xl font-bold md:text-4xl">How It Works</h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
               Simple steps to find your dream property
             </p>
           </div>
           
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="rounded-lg bg-background p-6 text-center shadow">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="scale-in rounded-xl bg-background p-6 text-center shadow-md transition-all duration-300 hover:shadow-lg">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <Home className="h-8 w-8" />
               </div>
@@ -32,7 +32,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="rounded-lg bg-background p-6 text-center shadow">
+            <div className="scale-in rounded-xl bg-background p-6 text-center shadow-md transition-all duration-300 hover:shadow-lg" style={{animationDelay: "0.1s"}}>
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <MessageSquare className="h-8 w-8" />
               </div>
@@ -42,7 +42,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="rounded-lg bg-background p-6 text-center shadow">
+            <div className="scale-in rounded-xl bg-background p-6 text-center shadow-md transition-all duration-300 hover:shadow-lg" style={{animationDelay: "0.2s"}}>
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <User className="h-8 w-8" />
               </div>
@@ -56,17 +56,17 @@ const Index = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-12 md:py-16">
         <div className="container px-4">
-          <div className="rounded-xl bg-primary p-8 text-center text-white md:p-12">
-            <h2 className="mb-4 text-3xl font-bold">
+          <div className="overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-blue-700 p-8 text-center text-white md:p-12">
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
               Ready to Find Your Next Property?
             </h2>
             <p className="mx-auto mb-6 max-w-2xl text-lg text-primary-foreground/90">
               Whether you're looking to buy, sell, or rent, we've got you covered with the best selection of properties.
             </p>
             <div className="flex flex-col justify-center gap-4 md:flex-row">
-              <Button size="lg" asChild variant="secondary">
+              <Button size="lg" asChild variant="secondary" className="text-primary">
                 <Link to="/properties?type=sale">Browse Properties For Sale</Link>
               </Button>
               <Button size="lg" asChild variant="outline" className="bg-transparent text-white hover:bg-white/10">
