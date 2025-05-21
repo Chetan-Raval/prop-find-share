@@ -1,0 +1,292 @@
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { Card } from "@/components/ui/card";
+import { Upload } from "lucide-react";
+
+const CreateProperty = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: "",
+    type: "sale",
+    bedrooms: "",
+    bathrooms: "",
+    area: "",
+    location: "",
+  });
+  
+  const [images, setImages] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Check if user is a vendor
+  if (user?.role !== "vendor") {
+    navigate("/dashboard");
+    return null;
+  }
+  
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImages(Array.from(e.target.files));
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Validate form data
+      if (
+        !formData.title ||
+        !formData.price ||
+        !formData.location ||
+        !formData.bedrooms ||
+        !formData.bathrooms ||
+        !formData.area
+      ) {
+        toast.error("Please fill all required fields");
+        return;
+      }
+      
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      
+      toast.success("Property listing created successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to create property listing");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  return (
+    <div>
+      <div className="mb-6">
+        <h1 className="mb-2 text-3xl font-bold">Create Property Listing</h1>
+        <p className="text-muted-foreground">
+          Fill out the form below to list your property
+        </p>
+      </div>
+      
+      <Card className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Details */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">Basic Details</h2>
+            
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Property Title *</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="Modern Apartment in City Center"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="location">Location *</Label>
+                <Input
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="123 Main St, City, State"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="price">Price ($) *</Label>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="350000"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="type">Listing Type *</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) => handleSelectChange("type", value)}
+                >
+                  <SelectTrigger id="type">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sale">For Sale</SelectItem>
+                    <SelectItem value="hire">For Rent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Describe your property in detail..."
+                className="min-h-32"
+              />
+            </div>
+          </div>
+          
+          {/* Property Features */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">Property Features</h2>
+            
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="bedrooms">Bedrooms *</Label>
+                <Select
+                  value={formData.bedrooms}
+                  onValueChange={(value) => handleSelectChange("bedrooms", value)}
+                >
+                  <SelectTrigger id="bedrooms">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="bathrooms">Bathrooms *</Label>
+                <Select
+                  value={formData.bathrooms}
+                  onValueChange={(value) => handleSelectChange("bathrooms", value)}
+                >
+                  <SelectTrigger id="bathrooms">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="area">Area (sqft) *</Label>
+                <Input
+                  id="area"
+                  name="area"
+                  type="number"
+                  value={formData.area}
+                  onChange={handleChange}
+                  placeholder="1200"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          
+          {/* Images */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">Property Images</h2>
+            
+            <div className="space-y-2">
+              <Label htmlFor="images">Upload Images</Label>
+              <div className="flex h-32 w-full cursor-pointer items-center justify-center rounded-md border border-dashed bg-muted/50">
+                <label
+                  htmlFor="images"
+                  className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-1"
+                >
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Click to upload (or drag and drop)
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    You can upload multiple images
+                  </span>
+                  <input
+                    id="images"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              
+              {images.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    {images.length} {images.length === 1 ? "file" : "files"}{" "}
+                    selected
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Submit */}
+          <div className="flex items-center justify-end space-x-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/dashboard")}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create Listing"}
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
+};
+
+export default CreateProperty;
