@@ -9,6 +9,8 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  createdAt: string; // Added for extra vendor metadata
+  isVerified?: boolean; // Added for verification status
 }
 
 interface AuthContextType {
@@ -18,6 +20,8 @@ interface AuthContextType {
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  isVendor: boolean; // Added for convenience
+  isCustomer: boolean; // Added for convenience
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,13 +76,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("Invalid password. Must be at least 6 characters.");
       }
       
-      // Create mock user for demo purposes
+      // Determine role based on email for demo purposes
+      const role: UserRole = email.toLowerCase().includes("vendor") ? "vendor" : "customer";
+      
+      // Create mock user for demo purposes with additional metadata
       const mockUser: User = {
         id: "user_" + Math.random().toString(36).substr(2, 9),
         name: email.split("@")[0],
         email: email,
-        // For demo: Determine role based on email
-        role: email.toLowerCase().includes("vendor") ? "vendor" : "customer"
+        role: role,
+        createdAt: new Date().toISOString(),
+        isVerified: role === "vendor", // Auto-verify vendors for demo
       };
       
       // Save to localStorage
@@ -86,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Update state
       setUser(mockUser);
-      toast.success("Successfully logged in!");
+      toast.success(`Welcome back, ${mockUser.name}! You're logged in as a ${role}.`);
       
     } catch (error) {
       console.error("Login error:", error);
@@ -122,12 +130,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock user creation
+      // Mock user creation with additional metadata
       const mockUser: User = {
         id: "user_" + Math.random().toString(36).substr(2, 9),
         name,
         email,
-        role
+        role,
+        createdAt: new Date().toISOString(),
+        isVerified: role === "customer", // Vendors require verification in a real app
       };
       
       // Save to localStorage for persistence
@@ -135,7 +145,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Update state
       setUser(mockUser);
-      toast.success(`Account created successfully as a ${role}!`);
+      
+      // Show role-specific success message
+      if (role === "vendor") {
+        toast.success("Vendor account created successfully! You can now list properties.");
+      } else {
+        toast.success("Account created successfully! You can now browse and save properties.");
+      }
       
     } catch (error) {
       console.error("Registration error:", error);
@@ -163,6 +179,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     toast.success("Logged out successfully");
   };
 
+  // Convenience booleans for role checks
+  const isVendor = user?.role === "vendor";
+  const isCustomer = user?.role === "customer";
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -171,7 +191,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login, 
         register, 
         logout,
-        isAuthenticated: !!user
+        isAuthenticated: !!user,
+        isVendor,
+        isCustomer
       }}
     >
       {children}
