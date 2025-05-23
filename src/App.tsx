@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
 import Dashboard from "./pages/Dashboard";
+import VendorDashboard from "./pages/VendorDashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import About from "./pages/About";
@@ -20,6 +21,11 @@ import CreateProperty from "./pages/CreateProperty";
 // Layout
 import RootLayout from "./layouts/RootLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
+
+// Components
+import VendorProperties from "./components/dashboard/VendorProperties";
+import VendorInquiries from "./components/dashboard/VendorInquiries";
+import AppointmentCalendar from "./components/dashboard/AppointmentCalendar";
 
 // Context
 import { AuthProvider } from "./contexts/AuthContext";
@@ -45,7 +51,11 @@ const App = () => (
             </Route>
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
+              <Route path="vendor" element={<VendorDashboard />} />
               <Route path="create-property" element={<CreateProperty />} />
+              <Route path="properties" element={<VendorProperties />} />
+              <Route path="inquiries" element={<VendorInquiries />} />
+              <Route path="appointments" element={<AppointmentCalendar />} />
             </Route>
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />

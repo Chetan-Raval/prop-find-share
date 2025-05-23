@@ -54,7 +54,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header className="border-b border-border/40">
+      <Header>
         <div className="ml-auto flex items-center space-x-4">
           {/* Notification dropdown */}
           <DropdownMenu>

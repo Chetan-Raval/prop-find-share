@@ -14,7 +14,9 @@ import {
   Calendar,
   Settings,
   Search,
-  Bell
+  Bell,
+  BarChart,
+  PieChart
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,8 +33,8 @@ const DashboardSidebar = () => {
       label: "Main",
       items: [
         {
-          title: "Dashboard",
-          path: "/dashboard",
+          title: isVendor ? "Vendor Dashboard" : "Dashboard",
+          path: isVendor ? "/dashboard/vendor" : "/dashboard",
           icon: <Home className="mr-2 h-4 w-4" />,
           show: true,
         },
@@ -45,7 +47,7 @@ const DashboardSidebar = () => {
         },
         {
           title: "My Properties",
-          path: "/dashboard/my-properties",
+          path: "/dashboard/properties",
           icon: <Home className="mr-2 h-4 w-4" />,
           show: isVendor,
           badge: "3",
@@ -55,6 +57,24 @@ const DashboardSidebar = () => {
           path: "/dashboard/saved-properties",
           icon: <Search className="mr-2 h-4 w-4" />,
           show: !isVendor,
+        },
+      ],
+    },
+    {
+      id: "analytics",
+      label: "Analytics",
+      items: [
+        {
+          title: "Performance",
+          path: "/dashboard/performance",
+          icon: <BarChart className="mr-2 h-4 w-4" />,
+          show: isVendor,
+        },
+        {
+          title: "Statistics",
+          path: "/dashboard/statistics",
+          icon: <PieChart className="mr-2 h-4 w-4" />,
+          show: isVendor,
         },
       ],
     },
@@ -76,10 +96,11 @@ const DashboardSidebar = () => {
           show: isVendor,
         },
         {
-          title: "Calls",
-          path: "/dashboard/calls",
+          title: "Inquiries",
+          path: "/dashboard/inquiries",
           icon: <Phone className="mr-2 h-4 w-4" />,
-          show: true,
+          show: isVendor,
+          badge: "5",
         },
         {
           title: "Notifications",
@@ -137,7 +158,10 @@ const DashboardSidebar = () => {
     <div className="flex h-full w-full flex-col border-r bg-background">
       <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
         <div className="flex flex-shrink-0 items-center px-4 mb-5">
-          <span className="text-lg font-bold text-primary">
+          <span className={cn(
+            "text-lg font-bold",
+            isVendor ? "text-blue-600" : "text-primary"
+          )}>
             PropertyHub {isVendor ? "Vendor" : ""}
           </span>
         </div>
