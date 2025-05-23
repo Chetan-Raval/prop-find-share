@@ -72,12 +72,12 @@ const VendorProperties = ({ limit }: VendorPropertiesProps) => {
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />
               <Badge className="absolute top-2 right-2 bg-primary">
-                {property.status === "For Sale" ? "Active" : property.status}
+                {property.type === "sale" ? "For Sale" : "For Rent"}
               </Badge>
             </div>
             <CardContent className="p-4">
               <h3 className="font-semibold text-lg mb-1">{property.title}</h3>
-              <p className="text-muted-foreground text-sm mb-2 truncate">{property.address}</p>
+              <p className="text-muted-foreground text-sm mb-2 truncate">{property.location}</p>
               
               <div className="flex justify-between items-center mb-3">
                 <span className="font-bold text-xl">${property.price.toLocaleString()}</span>

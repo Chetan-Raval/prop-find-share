@@ -8,10 +8,12 @@ export const mockProperties: PropertyData[] = [
     title: "Modern Downtown Apartment",
     price: 350000,
     location: "123 Main St, Downtown, CA",
+    address: "123 Main St, Downtown, CA",
     bedrooms: 2,
     bathrooms: 2,
     area: 1200,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -19,10 +21,12 @@ export const mockProperties: PropertyData[] = [
     title: "Luxury Villa with Pool",
     price: 1200000,
     location: "456 Ocean Dr, Beachside, FL",
+    address: "456 Ocean Dr, Beachside, FL",
     bedrooms: 5,
     bathrooms: 4,
     area: 3500,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -30,10 +34,12 @@ export const mockProperties: PropertyData[] = [
     title: "Cozy Studio in the Heart of the City",
     price: 1500,
     location: "789 Central Ave, Midtown, NY",
+    address: "789 Central Ave, Midtown, NY",
     bedrooms: 1,
     bathrooms: 1,
     area: 600,
     type: "hire",
+    status: "For Rent",
     imageUrl: "https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -41,10 +47,12 @@ export const mockProperties: PropertyData[] = [
     title: "Spacious Family Home",
     price: 450000,
     location: "101 Maple Rd, Suburbia, TX",
+    address: "101 Maple Rd, Suburbia, TX",
     bedrooms: 4,
     bathrooms: 3,
     area: 2400,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -52,10 +60,12 @@ export const mockProperties: PropertyData[] = [
     title: "Rustic Cabin Retreat",
     price: 275000,
     location: "202 Pine Trail, Woodland, OR",
+    address: "202 Pine Trail, Woodland, OR",
     bedrooms: 3,
     bathrooms: 1,
     area: 1100,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -63,10 +73,12 @@ export const mockProperties: PropertyData[] = [
     title: "High-Rise Condo with City Views",
     price: 2200,
     location: "303 Tower Plaza, Downtown, IL",
+    address: "303 Tower Plaza, Downtown, IL",
     bedrooms: 2,
     bathrooms: 2,
     area: 1100,
     type: "hire",
+    status: "For Rent",
     imageUrl: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -74,10 +86,12 @@ export const mockProperties: PropertyData[] = [
     title: "Waterfront Property",
     price: 850000,
     location: "404 Lakeside Dr, Lakeview, MI",
+    address: "404 Lakeside Dr, Lakeview, MI",
     bedrooms: 3,
     bathrooms: 3,
     area: 2200,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -85,10 +99,12 @@ export const mockProperties: PropertyData[] = [
     title: "Urban Loft Space",
     price: 2800,
     location: "505 Arts District, Downtown, WA",
+    address: "505 Arts District, Downtown, WA",
     bedrooms: 1,
     bathrooms: 2,
     area: 1500,
     type: "hire",
+    status: "For Rent",
     imageUrl: "https://images.unsplash.com/photo-1600607687644-c7751a86ea9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -96,10 +112,12 @@ export const mockProperties: PropertyData[] = [
     title: "Historic Brownstone",
     price: 925000,
     location: "606 Heritage St, Old Town, MA",
+    address: "606 Heritage St, Old Town, MA",
     bedrooms: 4,
     bathrooms: 3,
     area: 2600,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -107,10 +125,12 @@ export const mockProperties: PropertyData[] = [
     title: "Mountain View Chalet",
     price: 3500,
     location: "707 Summit Ridge, Mountainside, CO",
+    address: "707 Summit Ridge, Mountainside, CO",
     bedrooms: 3,
     bathrooms: 2,
     area: 1800,
     type: "hire",
+    status: "For Rent",
     imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -118,10 +138,12 @@ export const mockProperties: PropertyData[] = [
     title: "Beach House Getaway",
     price: 620000,
     location: "808 Shoreline Dr, Coastal, SC",
+    address: "808 Shoreline Dr, Coastal, SC",
     bedrooms: 3,
     bathrooms: 2,
     area: 1600,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   },
   {
@@ -129,10 +151,12 @@ export const mockProperties: PropertyData[] = [
     title: "Modern Glass House",
     price: 1100000,
     location: "909 Vista Way, Hillside, AZ",
+    address: "909 Vista Way, Hillside, AZ",
     bedrooms: 4,
     bathrooms: 4,
     area: 3200,
     type: "sale",
+    status: "For Sale",
     imageUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
   }
 ];

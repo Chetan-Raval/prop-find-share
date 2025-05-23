@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,8 @@ export interface PropertyData {
   area: number;
   type: "sale" | "hire";
   imageUrl: string;
+  status?: string; // Added status property
+  address?: string; // Added address property
 }
 
 interface PropertyCardProps {
