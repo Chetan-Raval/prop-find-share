@@ -1,4 +1,3 @@
-
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -136,7 +135,7 @@ const DashboardLayout = () => {
         {/* Mobile sidebar with Sheet component */}
         <div className="block lg:hidden">
           <Sheet>
-            <SheetTrigger>
+            <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
