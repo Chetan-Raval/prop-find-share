@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/contexts/AuthContext";
 import type { UserRole } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { UserIcon, KeyIcon, EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
+import { UserIcon, KeyIcon, EyeIcon, EyeOffIcon, MailIcon, CheckCircle2 } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -46,6 +45,8 @@ const Register = () => {
       role: "customer",
     },
   });
+
+  const watchedRole = form.watch("role");
 
   const onSubmit = async (values: RegisterFormValues) => {
     setError(null);
@@ -195,38 +196,83 @@ const Register = () => {
                   control={form.control}
                   name="role"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-gray-700 font-medium">Account Type</FormLabel>
+                    <FormItem className="space-y-4">
+                      <FormLabel className="text-gray-700 font-medium text-lg">Account Type</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                         >
                           <div className="relative">
-                            <RadioGroupItem value="customer" id="customer" className="peer sr-only" />
+                            <RadioGroupItem value="customer" id="customer" className="sr-only" />
                             <label
                               htmlFor="customer"
-                              className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-blue-500 peer-checked:bg-gradient-to-br peer-checked:from-blue-100 peer-checked:to-blue-200 hover:shadow-md transform hover:scale-[1.02]"
+                              className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg ${
+                                watchedRole === "customer"
+                                  ? "border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg ring-2 ring-blue-200"
+                                  : "border-gray-200 bg-gradient-to-br from-blue-50/30 to-blue-100/30 hover:border-blue-300"
+                              }`}
                             >
-                              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-3">
-                                <UserIcon className="w-6 h-6 text-white" />
+                              <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 ${
+                                watchedRole === "customer"
+                                  ? "bg-blue-500 shadow-lg"
+                                  : "bg-blue-400"
+                              }`}>
+                                <UserIcon className="w-8 h-8 text-white" />
                               </div>
-                              <span className="font-semibold text-blue-700 mb-1">Customer</span>
-                              <span className="text-xs text-blue-600 text-center">Find and rent properties</span>
+                              <div className="flex items-center space-x-2 mb-2">
+                                <span className={`font-bold text-lg ${
+                                  watchedRole === "customer" ? "text-blue-700" : "text-blue-600"
+                                }`}>
+                                  Customer
+                                </span>
+                                {watchedRole === "customer" && (
+                                  <CheckCircle2 className="w-5 h-5 text-blue-500 animate-scale-in" />
+                                )}
+                              </div>
+                              <span className="text-sm text-blue-600 text-center font-medium">
+                                Find and rent properties
+                              </span>
+                              <div className="mt-3 text-xs text-blue-500 text-center">
+                                • Browse listings • Save favorites • Contact vendors
+                              </div>
                             </label>
                           </div>
+                          
                           <div className="relative">
-                            <RadioGroupItem value="vendor" id="vendor" className="peer sr-only" />
+                            <RadioGroupItem value="vendor" id="vendor" className="sr-only" />
                             <label
                               htmlFor="vendor"
-                              className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-green-500 peer-checked:bg-gradient-to-br peer-checked:from-green-100 peer-checked:to-green-200 hover:shadow-md transform hover:scale-[1.02]"
+                              className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg ${
+                                watchedRole === "vendor"
+                                  ? "border-green-500 bg-gradient-to-br from-green-50 to-green-100 shadow-lg ring-2 ring-green-200"
+                                  : "border-gray-200 bg-gradient-to-br from-green-50/30 to-green-100/30 hover:border-green-300"
+                              }`}
                             >
-                              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-3">
-                                <UserIcon className="w-6 h-6 text-white" />
+                              <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 ${
+                                watchedRole === "vendor"
+                                  ? "bg-green-500 shadow-lg"
+                                  : "bg-green-400"
+                              }`}>
+                                <UserIcon className="w-8 h-8 text-white" />
                               </div>
-                              <span className="font-semibold text-green-700 mb-1">Vendor</span>
-                              <span className="text-xs text-green-600 text-center">List and manage properties</span>
+                              <div className="flex items-center space-x-2 mb-2">
+                                <span className={`font-bold text-lg ${
+                                  watchedRole === "vendor" ? "text-green-700" : "text-green-600"
+                                }`}>
+                                  Vendor
+                                </span>
+                                {watchedRole === "vendor" && (
+                                  <CheckCircle2 className="w-5 h-5 text-green-500 animate-scale-in" />
+                                )}
+                              </div>
+                              <span className="text-sm text-green-600 text-center font-medium">
+                                List and manage properties
+                              </span>
+                              <div className="mt-3 text-xs text-green-500 text-center">
+                                • Create listings • Manage properties • Handle inquiries
+                              </div>
                             </label>
                           </div>
                         </RadioGroup>
