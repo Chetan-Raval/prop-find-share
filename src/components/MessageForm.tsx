@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { messageService } from "@/services/messageService";
 
 interface MessageFormProps {
   recipientId: string;
@@ -34,13 +35,18 @@ const MessageForm = ({ recipientId, propertyId }: MessageFormProps) => {
     setIsSending(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await messageService.sendMessage({
+        recipientId,
+        propertyId,
+        content: message.trim(),
+      });
       
       toast.success("Message sent successfully!");
       setMessage("");
-    } catch (error) {
-      toast.error("Failed to send message. Please try again.");
+    } catch (error: any) {
+      console.error("Send message error:", error);
+      const errorMessage = error.response?.data?.message || "Failed to send message. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsSending(false);
     }
