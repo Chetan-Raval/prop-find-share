@@ -89,37 +89,35 @@ const DashboardLayout = () => {
                 side="left" 
                 className="p-0 w-80 bg-gradient-to-b from-white via-gray-50/50 to-blue-50/30 border-r-2 border-primary/10"
               >
-                <SheetHeader className="sr-only">
-                  <SheetTitle>Navigation Menu</SheetTitle>
+                <SheetHeader className="p-6 border-b bg-gradient-to-r from-primary/5 via-blue-50 to-violet-50/50">
+                  <SheetTitle className="text-left font-bold text-lg text-gray-900">
+                    Navigation Menu
+                  </SheetTitle>
+                  <div className="flex items-center space-x-4 mt-4">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${
+                      isVendor 
+                        ? "bg-gradient-to-br from-blue-500 via-violet-500 to-purple-600" 
+                        : "bg-gradient-to-br from-primary via-blue-500 to-primary/70"
+                    }`}>
+                      <span className="text-white font-bold text-xl">
+                        {user?.name?.[0]?.toUpperCase() || "U"}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="font-bold text-lg text-gray-900 mb-1">
+                        {user?.name}
+                      </h2>
+                      <p className="text-sm text-muted-foreground mb-2">{user?.email}</p>
+                      {isVendor && (
+                        <Badge className="bg-gradient-to-r from-blue-500 to-violet-500 text-white border-0 shadow-md">
+                          <span className="text-xs font-medium">Vendor Account</span>
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
                 </SheetHeader>
                 
                 <div className="h-full flex flex-col">
-                  {/* Mobile Sidebar Header */}
-                  <div className="p-6 border-b bg-gradient-to-r from-primary/5 via-blue-50 to-violet-50/50">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${
-                        isVendor 
-                          ? "bg-gradient-to-br from-blue-500 via-violet-500 to-purple-600" 
-                          : "bg-gradient-to-br from-primary via-blue-500 to-primary/70"
-                      }`}>
-                        <span className="text-white font-bold text-xl">
-                          {user?.name?.[0]?.toUpperCase() || "U"}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <h2 className="font-bold text-lg text-gray-900 mb-1">
-                          {user?.name}
-                        </h2>
-                        <p className="text-sm text-muted-foreground mb-2">{user?.email}</p>
-                        {isVendor && (
-                          <Badge className="bg-gradient-to-r from-blue-500 to-violet-500 text-white border-0 shadow-md">
-                            <span className="text-xs font-medium">Vendor Account</span>
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
                   {/* Mobile Sidebar Content */}
                   <div className="flex-1 overflow-hidden">
                     <DashboardSidebar isMobile onNavigate={() => setMobileMenuOpen(false)} />
