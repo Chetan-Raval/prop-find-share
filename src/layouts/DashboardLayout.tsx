@@ -9,6 +9,8 @@ import { useState } from "react";
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -41,9 +43,9 @@ const DashboardLayout = () => {
 
       {/* Mobile Header with Enhanced Design */}
       <div className="lg:hidden">
-        <div className="flex items-center justify-between p-4 border-b bg-white/80 backdrop-blur-md shadow-sm">
+        <div className="flex items-center justify-between p-4 border-b bg-white/90 backdrop-blur-lg shadow-sm sticky top-0 z-40">
           <div className="flex items-center space-x-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-md ${
               isVendor 
                 ? "bg-gradient-to-br from-blue-500 to-violet-600" 
                 : "bg-gradient-to-br from-primary to-primary/70"
@@ -62,7 +64,7 @@ const DashboardLayout = () => {
           
           <div className="flex items-center space-x-2">
             {/* Notification Bell */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative hover:bg-primary/10">
               <Bell className="h-5 w-5" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-red-500 hover:bg-red-500">
                 3
@@ -85,29 +87,33 @@ const DashboardLayout = () => {
               </SheetTrigger>
               <SheetContent 
                 side="left" 
-                className="p-0 w-80 bg-gradient-to-b from-white to-gray-50/50 border-r-2 border-primary/10"
+                className="p-0 w-80 bg-gradient-to-b from-white via-gray-50/50 to-blue-50/30 border-r-2 border-primary/10"
               >
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Navigation Menu</SheetTitle>
+                </SheetHeader>
+                
                 <div className="h-full flex flex-col">
                   {/* Mobile Sidebar Header */}
-                  <div className="p-6 border-b bg-gradient-to-r from-primary/5 to-blue-50">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+                  <div className="p-6 border-b bg-gradient-to-r from-primary/5 via-blue-50 to-violet-50/50">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${
                         isVendor 
-                          ? "bg-gradient-to-br from-blue-500 to-violet-600" 
-                          : "bg-gradient-to-br from-primary to-primary/70"
+                          ? "bg-gradient-to-br from-blue-500 via-violet-500 to-purple-600" 
+                          : "bg-gradient-to-br from-primary via-blue-500 to-primary/70"
                       }`}>
-                        <span className="text-white font-bold text-lg">
+                        <span className="text-white font-bold text-xl">
                           {user?.name?.[0]?.toUpperCase() || "U"}
                         </span>
                       </div>
                       <div className="flex-1">
-                        <h2 className="font-bold text-lg text-gray-900">
+                        <h2 className="font-bold text-lg text-gray-900 mb-1">
                           {user?.name}
                         </h2>
-                        <p className="text-sm text-muted-foreground">{user?.email}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{user?.email}</p>
                         {isVendor && (
-                          <Badge variant="outline" className="mt-1 text-xs bg-blue-50 border-blue-200">
-                            Vendor Account
+                          <Badge className="bg-gradient-to-r from-blue-500 to-violet-500 text-white border-0 shadow-md">
+                            <span className="text-xs font-medium">Vendor Account</span>
                           </Badge>
                         )}
                       </div>
