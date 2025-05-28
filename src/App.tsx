@@ -17,6 +17,7 @@ import Register from "./pages/Register";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import CreateProperty from "./pages/CreateProperty";
+import Messages from "./pages/Messages";
 
 // Layout
 import RootLayout from "./layouts/RootLayout";
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="properties" element={<VendorProperties />} />
               <Route path="inquiries" element={<VendorInquiries />} />
               <Route path="appointments" element={<AppointmentCalendar />} />
+              <Route path="messages" element={<Messages />} />
             </Route>
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,9 +8,10 @@ import MessageForm from "@/components/MessageForm";
 import { mockProperties } from "@/data/mockData";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { Phone, Share, Heart } from "lucide-react";
+import { Phone, Share, Heart, MessageSquare } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { PropertyData } from "@/components/PropertyCard";
+import { Link } from "react-router-dom";
 
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -197,6 +197,17 @@ const PropertyDetail = () => {
               >
                 <Phone className="h-4 w-4" />
                 Call Vendor
+              </Button>
+              
+              <Button 
+                asChild
+                variant="outline"
+                className="w-full gap-2"
+              >
+                <Link to="/dashboard/messages">
+                  <MessageSquare className="h-4 w-4" />
+                  Open Chat
+                </Link>
               </Button>
               
               <Separator />
