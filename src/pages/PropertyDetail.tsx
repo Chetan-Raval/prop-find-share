@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import PropertyFeatures from "@/components/PropertyFeatures";
 import MessageForm from "@/components/MessageForm";
+import PropertyImageCarousel from "@/components/PropertyImageCarousel";
 import { mockProperties } from "@/data/mockData";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -86,6 +88,11 @@ const PropertyDetail = () => {
     // In a real app, this would show the vendor's number or initiate a call
     toast.success("Connecting you to the vendor...");
   };
+
+  // Use images array if available, otherwise fallback to single imageUrl
+  const propertyImages = property.images && property.images.length > 0 
+    ? property.images 
+    : [property.imageUrl];
   
   return (
     <div className="container py-8">
@@ -103,12 +110,12 @@ const PropertyDetail = () => {
         </div>
       </div>
       
-      {/* Property images */}
-      <div className="mb-8 overflow-hidden rounded-lg bg-muted">
-        <img
-          src={property.imageUrl}
-          alt={property.title}
-          className="h-[500px] w-full object-cover"
+      {/* Property images carousel */}
+      <div className="mb-8">
+        <PropertyImageCarousel 
+          images={propertyImages}
+          title={property.title}
+          className="h-[500px]"
         />
       </div>
       
