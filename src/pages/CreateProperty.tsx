@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
-import { Upload } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 const CreateProperty = () => {
   const navigate = useNavigate();
@@ -52,12 +52,6 @@ const CreateProperty = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setImages(Array.from(e.target.files));
-    }
-  };
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -75,11 +69,20 @@ const CreateProperty = () => {
         toast.error("Please fill all required fields");
         return;
       }
+
+      // Validate images
+      if (images.length === 0) {
+        toast.error("Please upload at least one property image");
+        return;
+      }
       
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Simulate API delay for image upload and property creation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       
-      toast.success("Property listing created successfully!");
+      console.log("Property data:", formData);
+      console.log("Images to upload:", images.length);
+      
+      toast.success(`Property listing created successfully with ${images.length} image(s)!`);
       navigate("/dashboard");
     } catch (error) {
       toast.error("Failed to create property listing");
@@ -233,41 +236,11 @@ const CreateProperty = () => {
           {/* Images */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold">Property Images</h2>
-            
-            <div className="space-y-2">
-              <Label htmlFor="images">Upload Images</Label>
-              <div className="flex h-32 w-full cursor-pointer items-center justify-center rounded-md border border-dashed bg-muted/50">
-                <label
-                  htmlFor="images"
-                  className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-1"
-                >
-                  <Upload className="h-8 w-8 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    Click to upload (or drag and drop)
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    You can upload multiple images
-                  </span>
-                  <input
-                    id="images"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              
-              {images.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    {images.length} {images.length === 1 ? "file" : "files"}{" "}
-                    selected
-                  </p>
-                </div>
-              )}
-            </div>
+            <ImageUpload 
+              images={images} 
+              onImagesChange={setImages}
+              maxImages={5}
+            />
           </div>
           
           {/* Submit */}

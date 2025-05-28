@@ -2,9 +2,10 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Home, Map, Bath, BedDouble, SquareCode, Heart } from "lucide-react";
+import { Map, Bath, BedDouble, SquareCode, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import PropertyImageCarousel from "./PropertyImageCarousel";
 
 export interface PropertyData {
   id: string;
@@ -16,6 +17,7 @@ export interface PropertyData {
   area: number;
   type: "sale" | "hire";
   imageUrl: string;
+  images?: string[]; // Array of multiple images
   status?: string;
   address?: string;
 }
@@ -28,6 +30,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // Use images array if available, otherwise fallback to single imageUrl
+  const propertyImages = property.images && property.images.length > 0 
+    ? property.images 
+    : [property.imageUrl];
+
   return (
     <Card 
       className="property-card group overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-lg"
@@ -35,16 +42,17 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative overflow-hidden">
-        <img
-          src={property.imageUrl}
-          alt={property.title}
-          className="property-image h-60 w-full object-cover"
+        <PropertyImageCarousel 
+          images={propertyImages}
+          title={property.title}
+          className="border-none shadow-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
         
         {/* Status badge */}
         <Badge
-          className="absolute left-3 top-3 font-medium shadow-md"
+          className="absolute left-3 top-3 font-medium shadow-md z-10"
           variant={property.type === "sale" ? "default" : "secondary"}
         >
           For {property.type === "sale" ? "Sale" : "Rent"}
@@ -57,14 +65,14 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             e.stopPropagation();
             setIsFavorite(!isFavorite);
           }}
-          className="absolute right-3 top-3 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center transition-all duration-300 hover:bg-white"
+          className="absolute right-3 top-3 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center transition-all duration-300 hover:bg-white z-10"
         >
           <Heart 
             className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`} 
           />
         </button>
 
-        <div className="absolute bottom-0 left-0 w-full p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
+        <div className="absolute bottom-0 left-0 w-full p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out z-10">
           <Link
             to={`/property/${property.id}`}
             className="inline-block w-full bg-primary hover:bg-primary/90 text-white text-center py-2 rounded-full shadow-lg"
