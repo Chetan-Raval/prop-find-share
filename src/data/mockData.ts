@@ -1,162 +1,128 @@
-
 import { PropertyData } from "@/components/PropertyCard";
 
 // Mock property data
+export interface PropertyData {
+  id: string;
+  title: string;
+  price: number;
+  location: string;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  type: "sale" | "hire";
+  imageUrl: string;
+  images?: string[];
+  status?: string;
+  address?: string;
+}
+
 export const mockProperties: PropertyData[] = [
   {
-    id: "prop1",
-    title: "Modern Downtown Apartment",
-    price: 350000,
-    location: "123 Main St, Downtown, CA",
-    address: "123 Main St, Downtown, CA",
-    bedrooms: 2,
+    id: "1",
+    title: "Luxury Modern Apartment",
+    price: 450000,
+    location: "Downtown, New York",
+    bedrooms: 3,
     bathrooms: 2,
     area: 1200,
     type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop"
+    ],
+    status: "active"
   },
   {
-    id: "prop2",
-    title: "Luxury Villa with Pool",
-    price: 1200000,
-    location: "456 Ocean Dr, Beachside, FL",
-    address: "456 Ocean Dr, Beachside, FL",
-    bedrooms: 5,
-    bathrooms: 4,
-    area: 3500,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+    id: "2",
+    title: "Cozy Family House",
+    price: 2500,
+    location: "Brooklyn, NY",
+    bedrooms: 4,
+    bathrooms: 3,
+    area: 1800,
+    type: "hire",
+    imageUrl: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop"
+    ],
+    status: "active"
   },
   {
-    id: "prop3",
-    title: "Cozy Studio in the Heart of the City",
-    price: 1500,
-    location: "789 Central Ave, Midtown, NY",
-    address: "789 Central Ave, Midtown, NY",
+    id: "3",
+    title: "Studio Apartment",
+    price: 1800,
+    location: "Manhattan, NY",
     bedrooms: 1,
     bathrooms: 1,
     area: 600,
     type: "hire",
-    status: "For Rent",
-    imageUrl: "https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
+    ],
+    status: "active"
   },
   {
-    id: "prop4",
-    title: "Spacious Family Home",
-    price: 450000,
-    location: "101 Maple Rd, Suburbia, TX",
-    address: "101 Maple Rd, Suburbia, TX",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 2400,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop5",
-    title: "Rustic Cabin Retreat",
-    price: 275000,
-    location: "202 Pine Trail, Woodland, OR",
-    address: "202 Pine Trail, Woodland, OR",
-    bedrooms: 3,
-    bathrooms: 1,
-    area: 1100,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop6",
-    title: "High-Rise Condo with City Views",
-    price: 2200,
-    location: "303 Tower Plaza, Downtown, IL",
-    address: "303 Tower Plaza, Downtown, IL",
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 1100,
-    type: "hire",
-    status: "For Rent",
-    imageUrl: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop7",
-    title: "Waterfront Property",
-    price: 850000,
-    location: "404 Lakeside Dr, Lakeview, MI",
-    address: "404 Lakeside Dr, Lakeview, MI",
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 2200,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop8",
-    title: "Urban Loft Space",
-    price: 2800,
-    location: "505 Arts District, Downtown, WA",
-    address: "505 Arts District, Downtown, WA",
-    bedrooms: 1,
-    bathrooms: 2,
-    area: 1500,
-    type: "hire",
-    status: "For Rent",
-    imageUrl: "https://images.unsplash.com/photo-1600607687644-c7751a86ea9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop9",
-    title: "Historic Brownstone",
-    price: 925000,
-    location: "606 Heritage St, Old Town, MA",
-    address: "606 Heritage St, Old Town, MA",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 2600,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop10",
-    title: "Mountain View Chalet",
-    price: 3500,
-    location: "707 Summit Ridge, Mountainside, CO",
-    address: "707 Summit Ridge, Mountainside, CO",
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 1800,
-    type: "hire",
-    status: "For Rent",
-    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop11",
-    title: "Beach House Getaway",
-    price: 620000,
-    location: "808 Shoreline Dr, Coastal, SC",
-    address: "808 Shoreline Dr, Coastal, SC",
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 1600,
-    type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "prop12",
-    title: "Modern Glass House",
-    price: 1100000,
-    location: "909 Vista Way, Hillside, AZ",
-    address: "909 Vista Way, Hillside, AZ",
-    bedrooms: 4,
+    id: "4",
+    title: "Penthouse with City View",
+    price: 1200000,
+    location: "Upper East Side, NY",
+    bedrooms: 5,
     bathrooms: 4,
-    area: 3200,
+    area: 2500,
     type: "sale",
-    status: "For Sale",
-    imageUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1571055107559-3e67626fa8be?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=800&h=600&fit=crop"
+    ],
+    status: "active"
+  }
+];
+
+// Keep existing users and other exports
+export const mockUsers = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    role: "customer" as const,
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+  },
+  {
+    id: "2", 
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "vendor" as const,
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+  }
+];
+
+export const mockMessages = [
+  {
+    id: "1",
+    senderId: "1",
+    receiverId: "2", 
+    content: "Hi, I'm interested in the luxury apartment listing.",
+    timestamp: new Date(Date.now() - 3600000),
+    propertyId: "1",
+    read: true
+  },
+  {
+    id: "2",
+    senderId: "2",
+    receiverId: "1",
+    content: "Thank you for your interest! I'd be happy to schedule a viewing.",
+    timestamp: new Date(Date.now() - 3000000),
+    propertyId: "1", 
+    read: false
   }
 ];

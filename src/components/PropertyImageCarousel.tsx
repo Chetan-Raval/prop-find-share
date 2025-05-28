@@ -26,29 +26,41 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
   }
 
   const nextImage = () => {
+    console.log("Next image clicked, current:", currentIndex, "total:", images.length);
     setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevImage = () => {
+    console.log("Previous image clicked, current:", currentIndex, "total:", images.length);
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   const goToImage = (index: number) => {
+    console.log("Going to image:", index);
     setCurrentIndex(index);
   };
+
+  console.log("PropertyImageCarousel rendered with", images.length, "images, current index:", currentIndex);
 
   return (
     <Card className={`overflow-hidden relative group ${className}`}>
       {/* Main Image */}
-      <div className="relative h-60 overflow-hidden">
+      <div className="relative h-60 overflow-hidden bg-gray-100">
         <img
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+          onError={(e) => {
+            console.error("Image failed to load:", images[currentIndex]);
+            e.currentTarget.style.display = 'none';
+          }}
+          onLoad={() => {
+            console.log("Image loaded successfully:", images[currentIndex]);
+          }}
         />
         
         {/* Image Counter */}
-        <Badge className="absolute top-3 right-3 bg-black/70 text-white">
+        <Badge className="absolute top-3 right-3 bg-black/80 text-white border-0 shadow-lg">
           {currentIndex + 1} / {images.length}
         </Badge>
 
@@ -58,19 +70,29 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={prevImage}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-10 w-10 shadow-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                prevImage();
+              }}
+              type="button"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5" />
             </Button>
             
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={nextImage}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-10 w-10 shadow-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                nextImage();
+              }}
+              type="button"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
             </Button>
           </>
         )}
@@ -78,22 +100,30 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
 
       {/* Thumbnail Navigation - Only show if more than 1 image */}
       {images.length > 1 && (
-        <div className="p-3 bg-muted/50">
-          <div className="flex gap-2 overflow-x-auto">
+        <div className="p-3 bg-gray-50/80 border-t">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {images.map((image, index) => (
               <button
                 key={index}
-                onClick={() => goToImage(index)}
-                className={`flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border-2 transition-all ${
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToImage(index);
+                }}
+                className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
                   index === currentIndex 
-                    ? "border-primary shadow-md" 
-                    : "border-transparent hover:border-muted-foreground"
+                    ? "border-primary shadow-lg ring-2 ring-primary/20" 
+                    : "border-gray-200 hover:border-gray-300"
                 }`}
+                type="button"
               >
                 <img
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error("Thumbnail failed to load:", image);
+                  }}
                 />
               </button>
             ))}
