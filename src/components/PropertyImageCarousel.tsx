@@ -16,7 +16,7 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
 
   if (!images || images.length === 0) {
     return (
-      <div className={`bg-muted rounded-lg flex items-center justify-center h-60 ${className}`}>
+      <div className={`bg-muted rounded-lg flex items-center justify-center h-96 ${className}`}>
         <div className="text-center text-muted-foreground">
           <Image className="h-12 w-12 mx-auto mb-2" />
           <p>No images available</p>
@@ -44,8 +44,8 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
 
   return (
     <Card className={`overflow-hidden relative group ${className}`}>
-      {/* Main Image */}
-      <div className="relative h-60 overflow-hidden bg-gray-100">
+      {/* Main Image - Increased height */}
+      <div className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden bg-gray-100">
         <img
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
@@ -70,7 +70,7 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-10 w-10 shadow-lg"
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-12 w-12 shadow-lg"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -78,13 +78,13 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
               }}
               type="button"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-6 w-6" />
             </Button>
             
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-10 w-10 shadow-lg"
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 h-12 w-12 shadow-lg"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -92,16 +92,16 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
               }}
               type="button"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-6 w-6" />
             </Button>
           </>
         )}
       </div>
 
-      {/* Thumbnail Navigation - Only show if more than 1 image */}
+      {/* Thumbnail Navigation - Only show if more than 1 image with increased height */}
       {images.length > 1 && (
-        <div className="p-3 bg-gray-50/80 border-t">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        <div className="p-4 bg-gray-50/80 border-t">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {images.map((image, index) => (
               <button
                 key={index}
@@ -110,7 +110,7 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
                   e.stopPropagation();
                   goToImage(index);
                 }}
-                className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
+                className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
                   index === currentIndex 
                     ? "border-primary shadow-lg ring-2 ring-primary/20" 
                     : "border-gray-200 hover:border-gray-300"

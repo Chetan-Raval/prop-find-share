@@ -110,12 +110,12 @@ const PropertyDetail = () => {
         </div>
       </div>
       
-      {/* Property images carousel */}
+      {/* Property images carousel with increased height */}
       <div className="mb-8">
         <PropertyImageCarousel 
           images={propertyImages}
           title={property.title}
-          className="h-[500px]"
+          className="h-auto"
         />
       </div>
       
