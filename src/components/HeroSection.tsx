@@ -12,6 +12,19 @@ const HeroSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyType, setPropertyType] = useState("all");
   const [isVisible, setIsVisible] = useState(false);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [propertiesCount, setPropertiesCount] = useState(0);
+  const [clientsCount, setClientsCount] = useState(0);
+  const [citiesCount, setCitiesCount] = useState(0);
+
+  // Text options for swapping animation
+  const swappingTexts = [
+    "Dream Home",
+    "Perfect Property", 
+    "Ideal Space",
+    "Future Investment",
+    "New Beginning"
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +34,71 @@ const HeroSection = () => {
   useEffect(() => {
     // Trigger animation after component mounts
     setIsVisible(true);
+  }, []);
+
+  // Text swapping effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTextIndex((prevIndex) => 
+        (prevIndex + 1) % swappingTexts.length
+      );
+    }, 2000); // Change text every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Counting animation effect
+  useEffect(() => {
+    const startCounting = () => {
+      // Properties count animation
+      let propertiesStart = 0;
+      const propertiesTarget = 5000;
+      const propertiesIncrement = propertiesTarget / 100;
+      
+      const propertiesTimer = setInterval(() => {
+        propertiesStart += propertiesIncrement;
+        if (propertiesStart >= propertiesTarget) {
+          setPropertiesCount(propertiesTarget);
+          clearInterval(propertiesTimer);
+        } else {
+          setPropertiesCount(Math.floor(propertiesStart));
+        }
+      }, 30);
+
+      // Clients count animation  
+      let clientsStart = 0;
+      const clientsTarget = 3200;
+      const clientsIncrement = clientsTarget / 100;
+      
+      const clientsTimer = setInterval(() => {
+        clientsStart += clientsIncrement;
+        if (clientsStart >= clientsTarget) {
+          setClientsCount(clientsTarget);
+          clearInterval(clientsTimer);
+        } else {
+          setClientsCount(Math.floor(clientsStart));
+        }
+      }, 35);
+
+      // Cities count animation
+      let citiesStart = 0;
+      const citiesTarget = 1500;
+      const citiesIncrement = citiesTarget / 100;
+      
+      const citiesTimer = setInterval(() => {
+        citiesStart += citiesIncrement;
+        if (citiesStart >= citiesTarget) {
+          setCitiesCount(citiesTarget);
+          clearInterval(citiesTimer);
+        } else {
+          setCitiesCount(Math.floor(citiesStart));
+        }
+      }, 40);
+    };
+
+    // Start counting after a delay
+    const timeout = setTimeout(startCounting, 1000);
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -60,7 +138,17 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
         >
           <h1 className="mb-6 text-4xl font-bold md:text-6xl lg:text-7xl text-white drop-shadow-lg">
-            Find Your <span className="text-blue-300">Dream Home</span>
+            Find Your <span className="text-blue-300 transition-all duration-500 ease-in-out">
+              <motion.span
+                key={currentTextIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                {swappingTexts[currentTextIndex]}
+              </motion.span>
+            </span>
           </h1>
           <p className="mx-auto mb-12 max-w-2xl text-lg text-blue-100 md:text-xl lg:text-2xl">
             Your perfect property is just a click away. Explore thousands of listings curated just for you.
@@ -72,18 +160,24 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {/* Stats above search */}
+          {/* Stats above search - with counting animation */}
           <div className="mx-auto mb-10 flex max-w-3xl justify-center gap-8 text-white">
             <div className="flex flex-col items-center">
-              <p className="text-2xl md:text-3xl font-bold text-white">5,000+</p>
+              <p className="text-2xl md:text-3xl font-bold text-white">
+                {propertiesCount.toLocaleString()}+
+              </p>
               <p className="text-sm md:text-base text-blue-200">Properties</p>
             </div>
             <div className="flex flex-col items-center">
-              <p className="text-2xl md:text-3xl font-bold text-white">3,200+</p>
+              <p className="text-2xl md:text-3xl font-bold text-white">
+                {clientsCount.toLocaleString()}+
+              </p>
               <p className="text-sm md:text-base text-blue-200">Happy Clients</p>
             </div>
             <div className="flex flex-col items-center">
-              <p className="text-2xl md:text-3xl font-bold text-white">1,500+</p>
+              <p className="text-2xl md:text-3xl font-bold text-white">
+                {citiesCount.toLocaleString()}+
+              </p>
               <p className="text-sm md:text-base text-blue-200">Cities</p>
             </div>
           </div>
