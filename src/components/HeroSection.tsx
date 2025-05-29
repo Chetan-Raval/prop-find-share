@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -38,31 +39,31 @@ const HeroSection = () => {
     setIsVisible(true);
   }, []);
 
-  // Amazing typing animation effect
+  // Enhanced typing animation effect
   useEffect(() => {
     const currentWord = swappingTexts[currentTextIndex];
     let timeoutId: NodeJS.Timeout;
 
     if (isTyping) {
-      // Typing animation
+      // Typing animation - one character at a time
       if (displayText.length < currentWord.length) {
         timeoutId = setTimeout(() => {
           setDisplayText(currentWord.slice(0, displayText.length + 1));
-        }, 100 + Math.random() * 100); // Variable typing speed for natural effect
+        }, 150 + Math.random() * 100); // Variable typing speed for natural effect
       } else {
-        // Pause before erasing
+        // Pause before erasing - show complete word for 2 seconds
         timeoutId = setTimeout(() => {
           setIsTyping(false);
-        }, 1500);
+        }, 2000);
       }
     } else {
-      // Erasing animation
+      // Erasing animation - faster than typing
       if (displayText.length > 0) {
         timeoutId = setTimeout(() => {
           setDisplayText(displayText.slice(0, -1));
-        }, 50 + Math.random() * 50); // Faster erasing
+        }, 75 + Math.random() * 50); // Faster erasing
       } else {
-        // Move to next word
+        // Move to next word and start typing again
         setCurrentTextIndex((prevIndex) => (prevIndex + 1) % swappingTexts.length);
         setIsTyping(true);
       }
@@ -166,10 +167,10 @@ const HeroSection = () => {
             <span className="relative inline-block min-w-[300px] md:min-w-[400px] lg:min-w-[500px]">
               <AnimatePresence mode="wait">
                 <motion.span
-                  key={`${currentTextIndex}-${displayText.length}`}
+                  key={`${currentTextIndex}-${displayText}`}
                   initial={{ 
                     opacity: 0,
-                    y: 20,
+                    y: 50,
                     scale: 0.8,
                     rotateX: -90
                   }}
@@ -181,20 +182,20 @@ const HeroSection = () => {
                   }}
                   exit={{ 
                     opacity: 0,
-                    y: -20,
+                    y: -50,
                     scale: 1.2,
                     rotateX: 90
                   }}
                   transition={{ 
-                    duration: 0.3,
+                    duration: 0.5,
                     type: "spring",
-                    stiffness: 200,
-                    damping: 20
+                    stiffness: 300,
+                    damping: 25
                   }}
-                  className="text-blue-300 inline-block relative"
+                  className="inline-block relative"
                   style={{
-                    background: 'linear-gradient(45deg, #60A5FA, #34D399, #F59E0B)',
-                    backgroundSize: '300% 300%',
+                    background: 'linear-gradient(45deg, #60A5FA, #34D399, #F59E0B, #F472B6)',
+                    backgroundSize: '400% 400%',
                     animation: 'gradient-shift 3s ease infinite',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -210,25 +211,26 @@ const HeroSection = () => {
                 </motion.span>
               </AnimatePresence>
               
-              {/* Floating particles around text */}
+              {/* Enhanced floating particles around text */}
               <div className="absolute inset-0 pointer-events-none">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(8)].map((_, i) => (
                   <motion.div
                     key={i}
                     className="absolute w-1 h-1 bg-blue-300 rounded-full"
                     style={{
-                      left: `${20 + i * 15}%`,
-                      top: `${20 + (i % 2) * 30}%`,
+                      left: `${10 + i * 12}%`,
+                      top: `${10 + (i % 3) * 25}%`,
                     }}
                     animate={{
-                      y: [-10, 10, -10],
-                      opacity: [0.3, 1, 0.3],
-                      scale: [0.5, 1, 0.5],
+                      y: [-15, 15, -15],
+                      x: [-10, 10, -10],
+                      opacity: [0.2, 1, 0.2],
+                      scale: [0.5, 1.5, 0.5],
                     }}
                     transition={{
-                      duration: 2 + i * 0.5,
+                      duration: 3 + i * 0.5,
                       repeat: Infinity,
-                      delay: i * 0.3,
+                      delay: i * 0.2,
                     }}
                   />
                 ))}
@@ -346,13 +348,13 @@ const HeroSection = () => {
             </button>
           </div>
           
-          {/* CTA Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4">
+          {/* CTA Buttons - Fixed layout */}
+          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
             <Button 
               onClick={() => navigate("/properties?type=sale")} 
               variant="secondary"
               size="lg" 
-              className="group text-lg px-6 hover:scale-105 transition-all duration-300 shadow-lg"
+              className="group text-lg px-8 py-4 hover:scale-105 transition-all duration-300 shadow-lg flex-1 sm:flex-none min-w-[200px]"
             >
               Browse Properties
               <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -361,7 +363,7 @@ const HeroSection = () => {
               onClick={() => navigate("/register")} 
               variant="outline" 
               size="lg" 
-              className="border-white text-white hover:bg-white/20 hover:text-white text-lg px-6 hover:scale-105 transition-all duration-300"
+              className="border-2 border-white/80 text-white hover:bg-white/20 hover:text-white hover:border-white text-lg px-8 py-4 hover:scale-105 transition-all duration-300 flex-1 sm:flex-none min-w-[200px]"
             >
               List Your Property
             </Button>
@@ -382,7 +384,9 @@ const HeroSection = () => {
         __html: `
           @keyframes gradient-shift {
             0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
             100% { background-position: 0% 50%; }
           }
         `
@@ -392,3 +396,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
