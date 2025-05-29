@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -110,12 +109,12 @@ const PropertyDetail = () => {
         </div>
       </div>
       
-      {/* Property images carousel with increased height */}
+      {/* Property images carousel with detail variant for larger height */}
       <div className="mb-8">
         <PropertyImageCarousel 
           images={propertyImages}
           title={property.title}
-          className="h-auto"
+          variant="detail"
         />
       </div>
       

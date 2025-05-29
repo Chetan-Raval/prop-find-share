@@ -46,11 +46,12 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           images={propertyImages}
           title={property.title}
           className="border-none shadow-none"
+          variant="default"
         />
         
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
         
-        {/* Status badge */}
+        {/* Status badge - positioned at top left */}
         <Badge
           className="absolute left-3 top-3 font-medium shadow-md z-10"
           variant={property.type === "sale" ? "default" : "secondary"}
@@ -58,7 +59,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           For {property.type === "sale" ? "Sale" : "Rent"}
         </Badge>
         
-        {/* Favorite button */}
+        {/* Favorite button - positioned at top right */}
         <button 
           onClick={(e) => {
             e.preventDefault();

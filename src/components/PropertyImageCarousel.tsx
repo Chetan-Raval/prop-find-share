@@ -9,14 +9,20 @@ interface PropertyImageCarouselProps {
   images: string[];
   title: string;
   className?: string;
+  variant?: "default" | "detail"; // Add variant prop to control size
 }
 
-const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageCarouselProps) => {
+const PropertyImageCarousel = ({ images, title, className = "", variant = "default" }: PropertyImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Set height based on variant
+  const heightClass = variant === "detail" 
+    ? "h-96 md:h-[500px] lg:h-[600px]" 
+    : "h-64 md:h-72"; // Keep smaller height for home page cards
 
   if (!images || images.length === 0) {
     return (
-      <div className={`bg-muted rounded-lg flex items-center justify-center h-96 ${className}`}>
+      <div className={`bg-muted rounded-lg flex items-center justify-center ${heightClass} ${className}`}>
         <div className="text-center text-muted-foreground">
           <Image className="h-12 w-12 mx-auto mb-2" />
           <p>No images available</p>
@@ -44,8 +50,8 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
 
   return (
     <Card className={`overflow-hidden relative group ${className}`}>
-      {/* Main Image - Increased height */}
-      <div className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden bg-gray-100">
+      {/* Main Image */}
+      <div className={`relative ${heightClass} overflow-hidden bg-gray-100`}>
         <img
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
@@ -59,8 +65,8 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
           }}
         />
         
-        {/* Image Counter */}
-        <Badge className="absolute top-3 right-3 bg-black/80 text-white border-0 shadow-lg">
+        {/* Image Counter - Moved to left to avoid overlap with favorite */}
+        <Badge className="absolute top-3 left-3 bg-black/80 text-white border-0 shadow-lg">
           {currentIndex + 1} / {images.length}
         </Badge>
 
@@ -98,8 +104,8 @@ const PropertyImageCarousel = ({ images, title, className = "" }: PropertyImageC
         )}
       </div>
 
-      {/* Thumbnail Navigation - Only show if more than 1 image with increased height */}
-      {images.length > 1 && (
+      {/* Thumbnail Navigation - Only show if more than 1 image and in detail variant */}
+      {images.length > 1 && variant === "detail" && (
         <div className="p-4 bg-gray-50/80 border-t">
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {images.map((image, index) => (

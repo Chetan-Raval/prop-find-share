@@ -1,20 +1,6 @@
 import { PropertyData } from "@/components/PropertyCard";
 
-// Mock property data
-export interface PropertyData {
-  id: string;
-  title: string;
-  price: number;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  type: "sale" | "hire";
-  imageUrl: string;
-  images?: string[];
-  status?: string;
-  address?: string;
-}
+// Mock property data - using the imported PropertyData interface
 
 export const mockProperties: PropertyData[] = [
   {
