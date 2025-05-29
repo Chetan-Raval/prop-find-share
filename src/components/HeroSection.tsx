@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, MapPin, Home as HomeIcon, Building, ArrowRight, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -13,6 +12,8 @@ const HeroSection = () => {
   const [propertyType, setPropertyType] = useState("all");
   const [isVisible, setIsVisible] = useState(false);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
   const [propertiesCount, setPropertiesCount] = useState(0);
   const [clientsCount, setClientsCount] = useState(0);
   const [citiesCount, setCitiesCount] = useState(0);
@@ -36,16 +37,38 @@ const HeroSection = () => {
     setIsVisible(true);
   }, []);
 
-  // Text swapping effect
+  // Amazing typing animation effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTextIndex((prevIndex) => 
-        (prevIndex + 1) % swappingTexts.length
-      );
-    }, 2000); // Change text every 2 seconds
+    const currentWord = swappingTexts[currentTextIndex];
+    let timeoutId: NodeJS.Timeout;
 
-    return () => clearInterval(interval);
-  }, []);
+    if (isTyping) {
+      // Typing animation
+      if (displayText.length < currentWord.length) {
+        timeoutId = setTimeout(() => {
+          setDisplayText(currentWord.slice(0, displayText.length + 1));
+        }, 100 + Math.random() * 100); // Variable typing speed for natural effect
+      } else {
+        // Pause before erasing
+        timeoutId = setTimeout(() => {
+          setIsTyping(false);
+        }, 1500);
+      }
+    } else {
+      // Erasing animation
+      if (displayText.length > 0) {
+        timeoutId = setTimeout(() => {
+          setDisplayText(displayText.slice(0, -1));
+        }, 50 + Math.random() * 50); // Faster erasing
+      } else {
+        // Move to next word
+        setCurrentTextIndex((prevIndex) => (prevIndex + 1) % swappingTexts.length);
+        setIsTyping(true);
+      }
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [displayText, isTyping, currentTextIndex, swappingTexts]);
 
   // Counting animation effect
   useEffect(() => {
@@ -138,16 +161,77 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
         >
           <h1 className="mb-6 text-4xl font-bold md:text-6xl lg:text-7xl text-white drop-shadow-lg">
-            Find Your <span className="text-blue-300 transition-all duration-500 ease-in-out">
-              <motion.span
-                key={currentTextIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                {swappingTexts[currentTextIndex]}
-              </motion.span>
+            Find Your{" "}
+            <span className="relative inline-block min-w-[300px] md:min-w-[400px] lg:min-w-[500px]">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={`${currentTextIndex}-${displayText.length}`}
+                  initial={{ 
+                    opacity: 0,
+                    y: 20,
+                    scale: 0.8,
+                    rotateX: -90
+                  }}
+                  animate={{ 
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    rotateX: 0
+                  }}
+                  exit={{ 
+                    opacity: 0,
+                    y: -20,
+                    scale: 1.2,
+                    rotateX: 90
+                  }}
+                  transition={{ 
+                    duration: 0.3,
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 20
+                  }}
+                  className="text-blue-300 inline-block relative"
+                  style={{
+                    background: 'linear-gradient(45deg, #60A5FA, #34D399, #F59E0B)',
+                    backgroundSize: '300% 300%',
+                    animation: 'gradient-shift 3s ease infinite',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  {displayText}
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                    className="ml-1 border-r-2 border-blue-300 inline-block h-[0.8em] align-middle"
+                  />
+                </motion.span>
+              </AnimatePresence>
+              
+              {/* Floating particles around text */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-blue-300 rounded-full"
+                    style={{
+                      left: `${20 + i * 15}%`,
+                      top: `${20 + (i % 2) * 30}%`,
+                    }}
+                    animate={{
+                      y: [-10, 10, -10],
+                      opacity: [0.3, 1, 0.3],
+                      scale: [0.5, 1, 0.5],
+                    }}
+                    transition={{
+                      duration: 2 + i * 0.5,
+                      repeat: Infinity,
+                      delay: i * 0.3,
+                    }}
+                  />
+                ))}
+              </div>
             </span>
           </h1>
           <p className="mx-auto mb-12 max-w-2xl text-lg text-blue-100 md:text-xl lg:text-2xl">
@@ -296,3 +380,11 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+<style jsx>{`
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+`}</style>
