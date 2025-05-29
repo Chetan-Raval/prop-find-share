@@ -29,7 +29,7 @@ const Header = () => {
       <div className="container flex h-16 items-center px-4 sm:px-6">
         {/* Logo */}
         <Link to="/" className="mr-6 flex items-center space-x-2">
-          <span className="text-xl font-bold text-primary">PropertyHub</span>
+          <span className="text-xl font-bold text-primary">FindIndiaHome</span>
         </Link>
 
         {/* Desktop Navigation */}
