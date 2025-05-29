@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -375,16 +376,19 @@ const HeroSection = () => {
                 className="fill-background"></path>
         </svg>
       </div>
+
+      {/* CSS for gradient animation */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `
+      }} />
     </div>
   );
 };
 
 export default HeroSection;
-
-<style jsx>{`
-  @keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-`}</style>
