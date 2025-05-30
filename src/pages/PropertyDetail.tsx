@@ -88,6 +88,15 @@ const PropertyDetail = () => {
     toast.success("Connecting you to the vendor...");
   };
 
+  // Currency formatting function
+  const formatPrice = (price: number, currency: string = "USD") => {
+    const symbol = currency === "INR" ? "₹" : "$";
+    if (currency === "INR") {
+      return `${symbol}${price.toLocaleString('en-IN')}`;
+    }
+    return `${symbol}${price.toLocaleString()}`;
+  };
+
   // Use images array if available, otherwise fallback to single imageUrl
   const propertyImages = property.images && property.images.length > 0 
     ? property.images 
@@ -102,7 +111,7 @@ const PropertyDetail = () => {
         </div>
         <div>
           <p className="text-2xl font-bold text-primary">
-            ${property.price.toLocaleString()}
+            {formatPrice(property.price, property.currency)}
             {property.type === "hire" && "/month"}
           </p>
           <Badge className="ml-2">{property.type === "sale" ? "For Sale" : "For Rent"}</Badge>
@@ -137,16 +146,16 @@ const PropertyDetail = () => {
                     <p className="text-lg font-semibold">{property.bedrooms}</p>
                   </div>
                   <div className="rounded-md bg-secondary p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Hall</p>
+                    <p className="text-lg font-semibold">{property.hall || 1}</p>
+                  </div>
+                  <div className="rounded-md bg-secondary p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Floor</p>
+                    <p className="text-lg font-semibold">{property.floor || 1}</p>
+                  </div>
+                  <div className="rounded-md bg-secondary p-4 text-center">
                     <p className="text-sm text-muted-foreground">Bathrooms</p>
                     <p className="text-lg font-semibold">{property.bathrooms}</p>
-                  </div>
-                  <div className="rounded-md bg-secondary p-4 text-center">
-                    <p className="text-sm text-muted-foreground">Area</p>
-                    <p className="text-lg font-semibold">{property.area} sqft</p>
-                  </div>
-                  <div className="rounded-md bg-secondary p-4 text-center">
-                    <p className="text-sm text-muted-foreground">Type</p>
-                    <p className="text-lg font-semibold capitalize">{property.type}</p>
                   </div>
                 </div>
               </div>
