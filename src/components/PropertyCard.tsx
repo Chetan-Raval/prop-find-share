@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Map, Bath, BedDouble, SquareCode, Heart } from "lucide-react";
+import { Map, Bath, BedDouble, Home, Building, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import PropertyImageCarousel from "./PropertyImageCarousel";
@@ -11,13 +11,16 @@ export interface PropertyData {
   id: string;
   title: string;
   price: number;
+  currency?: "USD" | "INR";
   location: string;
   bedrooms: number;
   bathrooms: number;
-  area: number;
+  area?: number; // Keep for backward compatibility
+  hall?: number; // New field
+  floor?: number; // New field
   type: "sale" | "hire";
   imageUrl: string;
-  images?: string[]; // Array of multiple images
+  images?: string[];
   status?: string;
   address?: string;
 }
@@ -34,6 +37,20 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const propertyImages = property.images && property.images.length > 0 
     ? property.images 
     : [property.imageUrl];
+
+  // Currency formatting
+  const getCurrencySymbol = (currency: string = "USD") => {
+    return currency === "INR" ? "₹" : "$";
+  };
+
+  const formatPrice = (price: number, currency: string = "USD") => {
+    const symbol = getCurrencySymbol(currency);
+    if (currency === "INR") {
+      // Format Indian currency with proper comma placement
+      return `${symbol}${price.toLocaleString('en-IN')}`;
+    }
+    return `${symbol}${price.toLocaleString()}`;
+  };
 
   return (
     <Card 
@@ -89,7 +106,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           transition={{ duration: 0.3 }}
         >
           <p className="mb-1 text-xl font-bold text-primary">
-            ${property.price.toLocaleString()}
+            {formatPrice(property.price, property.currency)}
             {property.type === "hire" && "/month"}
           </p>
           <h3 className="mb-2 line-clamp-1 text-lg font-semibold group-hover:text-primary transition-colors">
@@ -99,18 +116,22 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <Map className="mr-1 h-4 w-4" />
             <p className="line-clamp-1">{property.location}</p>
           </div>
-          <div className="grid grid-cols-3 gap-2 border-t pt-4 text-sm">
+          <div className="grid grid-cols-4 gap-2 border-t pt-4 text-sm">
             <div className="flex items-center">
               <BedDouble className="mr-1 h-4 w-4 text-primary" />
               <span>{property.bedrooms} beds</span>
             </div>
             <div className="flex items-center">
-              <Bath className="mr-1 h-4 w-4 text-primary" />
-              <span>{property.bathrooms} baths</span>
+              <Home className="mr-1 h-4 w-4 text-primary" />
+              <span>{property.hall || 1} hall</span>
             </div>
             <div className="flex items-center">
-              <SquareCode className="mr-1 h-4 w-4 text-primary" />
-              <span>{property.area} sqft</span>
+              <Building className="mr-1 h-4 w-4 text-primary" />
+              <span>{property.floor || 1} floor</span>
+            </div>
+            <div className="flex items-center">
+              <Bath className="mr-1 h-4 w-4 text-primary" />
+              <span>{property.bathrooms} baths</span>
             </div>
           </div>
         </motion.div>

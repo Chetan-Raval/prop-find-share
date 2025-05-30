@@ -25,10 +25,12 @@ const CreateProperty = () => {
     title: "",
     description: "",
     price: "",
+    currency: "USD",
     type: "sale",
     bedrooms: "",
     bathrooms: "",
-    area: "",
+    hall: "",
+    floor: "",
     location: "",
   });
   
@@ -64,7 +66,8 @@ const CreateProperty = () => {
         !formData.location ||
         !formData.bedrooms ||
         !formData.bathrooms ||
-        !formData.area
+        !formData.hall ||
+        !formData.floor
       ) {
         toast.error("Please fill all required fields");
         return;
@@ -133,16 +136,31 @@ const CreateProperty = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="price">Price ($) *</Label>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleChange}
-                  placeholder="350000"
-                  required
-                />
+                <Label htmlFor="price">Price *</Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={formData.currency}
+                    onValueChange={(value) => handleSelectChange("currency", value)}
+                  >
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USD">USD ($)</SelectItem>
+                      <SelectItem value="INR">INR (₹)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    id="price"
+                    name="price"
+                    type="number"
+                    value={formData.price}
+                    onChange={handleChange}
+                    placeholder="350000"
+                    className="flex-1"
+                    required
+                  />
+                </div>
               </div>
               
               <div className="space-y-2">
@@ -179,7 +197,7 @@ const CreateProperty = () => {
           <div className="space-y-6">
             <h2 className="text-xl font-semibold">Property Features</h2>
             
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
               <div className="space-y-2">
                 <Label htmlFor="bedrooms">Bedrooms *</Label>
                 <Select
@@ -191,6 +209,44 @@ const CreateProperty = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="hall">Hall *</Label>
+                <Select
+                  value={formData.hall}
+                  onValueChange={(value) => handleSelectChange("hall", value)}
+                >
+                  <SelectTrigger id="hall">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="floor">Floor *</Label>
+                <Select
+                  value={formData.floor}
+                  onValueChange={(value) => handleSelectChange("floor", value)}
+                >
+                  <SelectTrigger id="floor">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                       <SelectItem key={num} value={num.toString()}>
                         {num}
                       </SelectItem>
@@ -216,19 +272,6 @@ const CreateProperty = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="area">Area (sqft) *</Label>
-                <Input
-                  id="area"
-                  name="area"
-                  type="number"
-                  value={formData.area}
-                  onChange={handleChange}
-                  placeholder="1200"
-                  required
-                />
               </div>
             </div>
           </div>

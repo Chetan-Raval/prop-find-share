@@ -24,6 +24,15 @@ const VendorProperties = ({ limit }: VendorPropertiesProps) => {
   const [filter, setFilter] = useState<string>("all");
   const properties = mockProperties.slice(0, limit || mockProperties.length);
   
+  // Currency formatting function
+  const formatPrice = (price: number, currency: string = "USD") => {
+    const symbol = currency === "INR" ? "₹" : "$";
+    if (currency === "INR") {
+      return `${symbol}${price.toLocaleString('en-IN')}`;
+    }
+    return `${symbol}${price.toLocaleString()}`;
+  };
+  
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -80,7 +89,9 @@ const VendorProperties = ({ limit }: VendorPropertiesProps) => {
               <p className="text-muted-foreground text-sm mb-2 truncate">{property.location}</p>
               
               <div className="flex justify-between items-center mb-3">
-                <span className="font-bold text-xl">${property.price.toLocaleString()}</span>
+                <span className="font-bold text-xl">
+                  {formatPrice(property.price, property.currency)}
+                </span>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <div className="flex items-center">
                     <Eye className="h-4 w-4 mr-1" />
@@ -90,6 +101,26 @@ const VendorProperties = ({ limit }: VendorPropertiesProps) => {
                     <MessageSquare className="h-4 w-4 mr-1" />
                     8
                   </div>
+                </div>
+              </div>
+              
+              {/* Updated property details */}
+              <div className="grid grid-cols-4 gap-1 text-xs text-muted-foreground mb-3">
+                <div className="text-center">
+                  <div className="font-medium">{property.bedrooms}</div>
+                  <div>Beds</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-medium">{property.hall || 1}</div>
+                  <div>Hall</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-medium">{property.floor || 1}</div>
+                  <div>Floor</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-medium">{property.bathrooms}</div>
+                  <div>Baths</div>
                 </div>
               </div>
               
