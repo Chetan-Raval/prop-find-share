@@ -21,7 +21,7 @@ const ChatSupport = () => {
     {
       id: '1',
       type: 'bot',
-      message: "Hi, I'm FindIndiaHome Assistant. 👋\n\nWhat do you need help with? Select a topic or type your question below.",
+      message: "Hi! Welcome to FindIndiaHome Support 🏠\n\nHow can I help you today? Select a topic or type your question below.",
       timestamp: new Date()
     }
   ]);
@@ -29,11 +29,12 @@ const ChatSupport = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const quickOptions = [
-    "Where is my property listing?",
-    "My verification status",
-    "Payment is missing",
-    "Update bank account for payout",
-    "Customer's payment is failing"
+    "How to search for properties?",
+    "Property booking process",
+    "Schedule property visit",
+    "Property documentation help",
+    "Contact property owner",
+    "Payment and pricing queries"
   ];
 
   const handleSendMessage = async (message: string) => {
@@ -67,16 +68,20 @@ const ChatSupport = () => {
   const getBotResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
-    if (lowerMessage.includes('property') || lowerMessage.includes('listing')) {
-      return "I can help you with property listings! Please check your vendor dashboard under 'My Properties' section. If you still can't find your listing, please provide your property ID and I'll look into it for you.";
-    } else if (lowerMessage.includes('verification')) {
-      return "For verification status, please go to your profile settings. Verification usually takes 24-48 hours. If it's been longer, please provide your account email and I'll check the status for you.";
-    } else if (lowerMessage.includes('payment')) {
-      return "For payment related issues, please check the 'Payments' section in your dashboard. If you're missing a payment, please provide the transaction ID or date, and I'll help you track it.";
-    } else if (lowerMessage.includes('bank') || lowerMessage.includes('payout')) {
-      return "To update your bank account for payouts, go to Settings > Payment Methods. Make sure to verify your new account details. Changes may take 1-2 business days to process.";
+    if (lowerMessage.includes('search') || lowerMessage.includes('find')) {
+      return "To search for properties on FindIndiaHome:\n\n1. Use the search bar on our homepage\n2. Filter by location, price, property type\n3. Use advanced filters for specific requirements\n\nNeed help with a specific search? Let me know your requirements!";
+    } else if (lowerMessage.includes('booking') || lowerMessage.includes('book')) {
+      return "Property booking process:\n\n1. Browse and select your desired property\n2. Click 'Contact Owner' or 'Book Now'\n3. Fill in your details and requirements\n4. Schedule a visit or direct booking\n\nOur team will connect you with the property owner within 24 hours.";
+    } else if (lowerMessage.includes('visit') || lowerMessage.includes('schedule')) {
+      return "To schedule a property visit:\n\n1. Go to the property details page\n2. Click 'Schedule Visit' button\n3. Choose your preferred date and time\n4. Add any special requirements\n\nProperty owners typically respond within 2-4 hours to confirm your visit.";
+    } else if (lowerMessage.includes('document') || lowerMessage.includes('papers')) {
+      return "For property documentation:\n\n• We verify all property documents\n• Legal verification reports available\n• Title deed, NOC, and approval documents\n• Our legal team can assist with documentation\n\nContact our legal support team for detailed document verification.";
+    } else if (lowerMessage.includes('owner') || lowerMessage.includes('contact')) {
+      return "To contact property owners:\n\n1. Visit the property details page\n2. Use 'Contact Owner' button\n3. Send direct message or request callback\n4. Schedule phone/video call\n\nAll owner contacts are verified for your safety and security.";
+    } else if (lowerMessage.includes('payment') || lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+      return "Payment and pricing information:\n\n• No hidden charges or broker fees\n• Transparent pricing on all listings\n• Secure payment options available\n• EMI and loan assistance provided\n\nFor specific pricing queries, please share the property details and I'll help you connect with the right person.";
     } else {
-      return "Thank you for your message! I understand you need help with: " + userMessage + "\n\nI'm connecting you with our support team who will get back to you within 2-3 hours. Is there anything else I can help you with right now?";
+      return "Thank you for contacting FindIndiaHome support! 🏠\n\nI understand you need help with: " + userMessage + "\n\nOur property experts will get back to you within 2-3 hours. You can also call us at +91-9876543210 or email support@findindiahome.com\n\nIs there anything else I can help you with?";
     }
   };
 
@@ -107,7 +112,7 @@ const ChatSupport = () => {
                   <Bot className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm">Assistant</CardTitle>
+                  <CardTitle className="text-sm">FindIndiaHome Support</CardTitle>
                   <Badge variant="outline" className="text-xs">
                     Online
                   </Badge>
@@ -203,7 +208,7 @@ const ChatSupport = () => {
                 className="flex space-x-2"
               >
                 <Input
-                  placeholder="Ask a question"
+                  placeholder="Ask about properties..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   className="flex-1 text-sm"
