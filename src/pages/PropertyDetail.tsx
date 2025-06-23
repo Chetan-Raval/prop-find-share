@@ -13,13 +13,14 @@ import { Phone, Share, Heart, MessageSquare } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { PropertyData } from "@/components/PropertyCard";
 import { Link } from "react-router-dom";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState(false);
   const { user } = useAuth();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   
   useEffect(() => {
     // In a real app, this would be an API call
@@ -63,12 +64,12 @@ const PropertyDetail = () => {
       return;
     }
     
-    setIsSaved(prev => !prev);
-    
-    if (!isSaved) {
-      toast.success("Property saved to favorites!");
+    if (!property) return;
+
+    if (isFavorite(property.id)) {
+      removeFromFavorites(property.id);
     } else {
-      toast.success("Property removed from favorites");
+      addToFavorites(property);
     }
   };
   
@@ -101,6 +102,8 @@ const PropertyDetail = () => {
   const propertyImages = property.images && property.images.length > 0 
     ? property.images 
     : [property.imageUrl];
+  
+  const isPropertyFavorite = property ? isFavorite(property.id) : false;
   
   return (
     <div className="container py-8">
@@ -237,8 +240,8 @@ const PropertyDetail = () => {
               className="flex-1 gap-2"
               onClick={handleSaveProperty}
             >
-              <Heart className={`h-4 w-4 ${isSaved ? "fill-current text-red-500" : ""}`} />
-              {isSaved ? "Saved" : "Save"}
+              <Heart className={`h-4 w-4 ${isPropertyFavorite ? "fill-current text-red-500" : ""}`} />
+              {isPropertyFavorite ? "Saved" : "Save"}
             </Button>
             <Button 
               variant="outline" 

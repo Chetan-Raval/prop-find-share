@@ -6,6 +6,9 @@ import { Map, Bath, BedDouble, Home, Building, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import PropertyImageCarousel from "./PropertyImageCarousel";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export interface PropertyData {
   id: string;
@@ -31,7 +34,8 @@ interface PropertyCardProps {
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const { user } = useAuth();
 
   // Use images array if available, otherwise fallback to single imageUrl
   const propertyImages = property.images && property.images.length > 0 
@@ -51,6 +55,24 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     }
     return `${symbol}${price.toLocaleString()}`;
   };
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error("Please log in to save favorites");
+      return;
+    }
+
+    if (isFavorite(property.id)) {
+      removeFromFavorites(property.id);
+    } else {
+      addToFavorites(property);
+    }
+  };
+
+  const isPropertyFavorite = isFavorite(property.id);
 
   return (
     <Card 
@@ -78,15 +100,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         
         {/* Favorite button - positioned at top right */}
         <button 
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsFavorite(!isFavorite);
-          }}
+          onClick={handleFavoriteClick}
           className="absolute right-3 top-3 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center transition-all duration-300 hover:bg-white z-10"
         >
           <Heart 
-            className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`} 
+            className={`h-5 w-5 ${isPropertyFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`} 
           />
         </button>
 
