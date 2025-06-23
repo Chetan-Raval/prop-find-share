@@ -25,6 +25,7 @@ const FAVORITES_STORAGE_KEY = "findIndiaHomeFavorites";
 
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<PropertyData[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
@@ -36,6 +37,7 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem(FAVORITES_STORAGE_KEY);
       }
     }
+    setIsInitialized(true);
   }, []);
 
   const saveFavorites = (newFavorites: PropertyData[]) => {
@@ -66,6 +68,11 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     saveFavorites([]);
     toast.success("All favorites cleared");
   };
+
+  // Don't render children until context is initialized
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <FavoritesContext.Provider 

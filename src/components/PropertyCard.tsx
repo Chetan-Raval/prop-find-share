@@ -34,7 +34,16 @@ interface PropertyCardProps {
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  
+  // Safely get favorites context
+  let favoritesContext;
+  try {
+    favoritesContext = useFavorites();
+  } catch (error) {
+    console.warn("FavoritesContext not available:", error);
+    favoritesContext = null;
+  }
+  
   const { user } = useAuth();
 
   // Use images array if available, otherwise fallback to single imageUrl
@@ -65,14 +74,19 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       return;
     }
 
-    if (isFavorite(property.id)) {
-      removeFromFavorites(property.id);
+    if (!favoritesContext) {
+      toast.error("Favorites feature is not available");
+      return;
+    }
+
+    if (favoritesContext.isFavorite(property.id)) {
+      favoritesContext.removeFromFavorites(property.id);
     } else {
-      addToFavorites(property);
+      favoritesContext.addToFavorites(property);
     }
   };
 
-  const isPropertyFavorite = isFavorite(property.id);
+  const isPropertyFavorite = favoritesContext ? favoritesContext.isFavorite(property.id) : false;
 
   return (
     <Card 
