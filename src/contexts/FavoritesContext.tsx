@@ -21,7 +21,7 @@ export const useFavorites = () => {
   return context;
 };
 
-const FAVORITES_STORAGE_KEY = "propertyHubFavorites";
+const FAVORITES_STORAGE_KEY = "findIndiaHomeFavorites";
 
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<PropertyData[]>([]);
