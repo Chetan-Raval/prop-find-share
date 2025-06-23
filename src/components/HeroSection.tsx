@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -280,7 +279,7 @@ const HeroSection = () => {
                 placeholder="Search by location, keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-14 w-full pl-12 bg-white/80 backdrop-blur-sm text-lg border-0 shadow-inner"
+                className="h-14 w-full pl-12 bg-white/90 backdrop-blur-sm text-lg border-0 shadow-inner text-gray-800 placeholder:text-gray-500"
               />
               <Search className="absolute left-4 top-4 h-6 w-6 text-primary" />
             </div>
@@ -289,7 +288,7 @@ const HeroSection = () => {
                 value={propertyType}
                 onValueChange={setPropertyType}
               >
-                <SelectTrigger className="h-14 w-full bg-white/80 backdrop-blur-sm text-lg border-0 shadow-inner">
+                <SelectTrigger className="h-14 w-full bg-white/90 backdrop-blur-sm text-lg border-0 shadow-inner text-gray-800">
                   <SelectValue placeholder="Property Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -299,7 +298,7 @@ const HeroSection = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="h-14 bg-primary hover:bg-blue-600 transition-all duration-300 hover:scale-105 text-lg shadow-lg shadow-blue-900/20" size="lg">
+            <Button type="submit" className="h-14 bg-primary hover:bg-blue-600 transition-all duration-300 hover:scale-105 text-lg shadow-lg shadow-blue-900/20 text-white font-semibold" size="lg">
               <Search className="mr-2 h-5 w-5" />
               Search
             </Button>
@@ -317,7 +316,7 @@ const HeroSection = () => {
             {["Verified Properties", "No Hidden Fees", "Top Locations", "Support 24/7"].map((item, i) => (
               <div key={i} className="flex items-center bg-white/10 px-4 py-2 rounded-full">
                 <CheckCircle size={16} className="mr-2 text-blue-300" />
-                {item}
+                <span className="text-white font-medium">{item}</span>
               </div>
             ))}
           </div>
@@ -327,21 +326,21 @@ const HeroSection = () => {
             <div className="popular-searches-title mr-2 text-white font-medium">Popular:</div>
             <button 
               onClick={() => navigate("/properties?search=apartment&type=hire")} 
-              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 text-white font-medium"
             >
               <Building size={16} className="mr-2" />
               Apartments for Rent
             </button>
             <button 
               onClick={() => navigate("/properties?search=house&type=sale")} 
-              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 text-white font-medium"
             >
               <HomeIcon size={16} className="mr-2" />
               Houses for Sale
             </button>
             <button 
               onClick={() => navigate("/properties?search=luxury")} 
-              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              className="flex items-center hover:text-white bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 text-white font-medium"
             >
               <MapPin size={16} className="mr-2" />
               Luxury Properties
@@ -354,7 +353,7 @@ const HeroSection = () => {
               onClick={() => navigate("/properties?type=sale")} 
               variant="secondary"
               size="lg" 
-              className="group text-lg px-8 py-4 hover:scale-105 transition-all duration-300 shadow-lg flex-1 sm:flex-none min-w-[200px]"
+              className="group text-lg px-8 py-4 hover:scale-105 transition-all duration-300 shadow-lg flex-1 sm:flex-none min-w-[200px] text-gray-800 font-semibold"
             >
               Browse Properties
               <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -363,7 +362,7 @@ const HeroSection = () => {
               onClick={() => navigate("/register")} 
               variant="outline" 
               size="lg" 
-              className="border-2 border-white/80 text-white hover:bg-white/20 hover:text-white hover:border-white text-lg px-8 py-4 hover:scale-105 transition-all duration-300 flex-1 sm:flex-none min-w-[200px]"
+              className="border-2 border-white/80 text-white hover:bg-white/20 hover:text-white hover:border-white text-lg px-8 py-4 hover:scale-105 transition-all duration-300 flex-1 sm:flex-none min-w-[200px] font-semibold"
             >
               List Your Property
             </Button>
@@ -396,4 +395,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
