@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -154,10 +153,13 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
           properties: {}
         };
 
-        (map.current!.getSource('draw-area') as mapboxgl.GeoJSONSource).setData({
-          type: 'FeatureCollection',
-          features: [polygon]
-        });
+        const source = map.current!.getSource('draw-area') as mapboxgl.GeoJSONSource;
+        if (source) {
+          source.setData({
+            type: 'FeatureCollection',
+            features: [polygon]
+          });
+        }
 
         map.current!.off('click', onClick);
         setDrawingMode(false);
@@ -200,10 +202,13 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
   const clearDrawing = () => {
     if (!map.current) return;
     
-    (map.current.getSource('draw-area') as mapboxgl.GeoJSONSource)?.setData({
-      type: 'FeatureCollection',
-      features: []
-    });
+    const source = map.current.getSource('draw-area') as mapboxgl.GeoJSONSource;
+    if (source) {
+      source.setData({
+        type: 'FeatureCollection',
+        features: []
+      });
+    }
     
     toast.success('Search area cleared');
   };
