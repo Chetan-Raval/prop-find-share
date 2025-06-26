@@ -1,6 +1,7 @@
+
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,111 +23,82 @@ interface InteractiveMapProps {
 
 const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState('');
-  const [isTokenSet, setIsTokenSet] = useState(false);
+  const map = useRef<L.Map | null>(null);
   const [drawingMode, setDrawingMode] = useState(false);
   const [commuteFrom, setCommuteFrom] = useState('');
   const [commuteTime, setCommuteTime] = useState<number | null>(null);
   const [nearbyAmenities, setNearbyAmenities] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
-  const drawingClickHandler = useRef<((e: mapboxgl.MapMouseEvent) => void) | null>(null);
+  const drawnItems = useRef<L.FeatureGroup | null>(null);
+  const markers = useRef<L.Marker[]>([]);
 
   const sampleProperties = [
-    { id: '1', title: 'Luxury Villa', price: 2500000, location: 'Mumbai', coordinates: [72.8777, 19.0760] as [number, number] },
-    { id: '2', title: 'Modern Apartment', price: 1200000, location: 'Delhi', coordinates: [77.1025, 28.7041] as [number, number] },
-    { id: '3', title: 'Beach House', price: 3000000, location: 'Goa', coordinates: [73.8278, 15.2993] as [number, number] },
+    { id: '1', title: 'Luxury Villa', price: 2500000, location: 'Mumbai', coordinates: [19.0760, 72.8777] as [number, number] },
+    { id: '2', title: 'Modern Apartment', price: 1200000, location: 'Delhi', coordinates: [28.7041, 77.1025] as [number, number] },
+    { id: '3', title: 'Beach House', price: 3000000, location: 'Goa', coordinates: [15.2993, 73.8278] as [number, number] },
   ];
 
   const displayProperties = properties.length > 0 ? properties : sampleProperties;
 
   useEffect(() => {
-    if (!mapContainer.current || !isTokenSet) return;
+    if (!mapContainer.current) return;
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [77.1025, 20.5937], // Center of India
-      zoom: 5,
+    // Fix for default markers
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
     });
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // Initialize map
+    map.current = L.map(mapContainer.current).setView([20.5937, 77.1025], 5);
+
+    // Add OpenStreetMap tiles (free)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map.current);
+
+    // Initialize drawn items layer
+    drawnItems.current = new L.FeatureGroup();
+    map.current.addLayer(drawnItems.current);
 
     // Add property markers
     displayProperties.forEach((property) => {
-      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-        <div class="p-2">
-          <h3 class="font-semibold">${property.title}</h3>
-          <p class="text-sm text-gray-600">${property.location}</p>
-          <p class="font-bold text-primary">₹${property.price.toLocaleString('en-IN')}</p>
-        </div>
-      `);
-
-      const marker = new mapboxgl.Marker({ color: '#3b82f6' })
-        .setLngLat(property.coordinates)
-        .setPopup(popup)
+      const marker = L.marker(property.coordinates)
+        .bindPopup(`
+          <div style="padding: 8px;">
+            <h3 style="font-weight: bold; margin: 0 0 4px 0;">${property.title}</h3>
+            <p style="margin: 0 0 4px 0; color: #666;">${property.location}</p>
+            <p style="margin: 0; font-weight: bold; color: #3b82f6;">₹${property.price.toLocaleString('en-IN')}</p>
+          </div>
+        `)
         .addTo(map.current!);
 
-      marker.getElement().addEventListener('click', () => {
+      marker.on('click', () => {
         setSelectedProperty(property);
         loadNearbyAmenities(property.coordinates);
       });
-    });
 
-    // Add drawing functionality
-    map.current.on('load', () => {
-      // Add source for drawing
-      map.current!.addSource('draw-area', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: []
-        }
-      });
-
-      // Add layer for drawing
-      map.current!.addLayer({
-        id: 'draw-area-fill',
-        type: 'fill',
-        source: 'draw-area',
-        paint: {
-          'fill-color': '#3b82f6',
-          'fill-opacity': 0.3
-        }
-      });
-
-      map.current!.addLayer({
-        id: 'draw-area-stroke',
-        type: 'line',
-        source: 'draw-area',
-        paint: {
-          'line-color': '#3b82f6',
-          'line-width': 2
-        }
-      });
+      markers.current.push(marker);
     });
 
     return () => {
-      map.current?.remove();
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+      markers.current = [];
     };
-  }, [isTokenSet, mapboxToken]);
-
-  const handleTokenSubmit = () => {
-    if (mapboxToken.trim()) {
-      setIsTokenSet(true);
-      toast.success('Map loaded successfully!');
-    } else {
-      toast.error('Please enter a valid Mapbox token');
-    }
-  };
+  }, []);
 
   const toggleDrawingMode = () => {
+    if (!map.current) return;
+
     setDrawingMode(!drawingMode);
+    
     if (!drawingMode) {
-      toast.info('Click on the map to start drawing your search area');
+      toast.info('Click on the map to start drawing your search area (minimum 3 points)');
       enableDrawing();
     } else {
       disableDrawing();
@@ -134,51 +106,51 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
   };
 
   const enableDrawing = () => {
-    if (!map.current) return;
+    if (!map.current || !drawnItems.current) return;
     
-    let coordinates: [number, number][] = [];
+    const points: L.LatLng[] = [];
+    let tempMarkers: L.CircleMarker[] = [];
     
-    const onClick = (e: mapboxgl.MapMouseEvent) => {
-      coordinates.push([e.lngLat.lng, e.lngLat.lat]);
+    const onMapClick = (e: L.LeafletMouseEvent) => {
+      points.push(e.latlng);
       
-      if (coordinates.length >= 3) {
-        // Close the polygon
-        coordinates.push(coordinates[0]);
+      // Add a small circle to show the clicked point
+      const circle = L.circleMarker(e.latlng, {
+        color: '#3b82f6',
+        fillColor: '#3b82f6',
+        fillOpacity: 0.7,
+        radius: 5
+      }).addTo(map.current!);
+      
+      tempMarkers.push(circle);
+      
+      if (points.length >= 3) {
+        // Create polygon
+        const polygon = L.polygon(points, {
+          color: '#3b82f6',
+          fillColor: '#3b82f6',
+          fillOpacity: 0.3
+        });
         
-        const polygon = {
-          type: 'Feature' as const,
-          geometry: {
-            type: 'Polygon' as const,
-            coordinates: [coordinates]
-          },
-          properties: {}
-        };
-
-        const source = map.current!.getSource('draw-area') as mapboxgl.GeoJSONSource;
-        if (source) {
-          source.setData({
-            type: 'FeatureCollection',
-            features: [polygon]
-          });
-        }
-
-        if (drawingClickHandler.current) {
-          map.current!.off('click', drawingClickHandler.current);
-          drawingClickHandler.current = null;
-        }
+        drawnItems.current!.addLayer(polygon);
+        
+        // Clean up temp markers
+        tempMarkers.forEach(marker => map.current!.removeLayer(marker));
+        tempMarkers = [];
+        
+        // Remove click event
+        map.current!.off('click', onMapClick);
         setDrawingMode(false);
         toast.success('Search area defined! Properties in this area will be highlighted.');
       }
     };
 
-    drawingClickHandler.current = onClick;
-    map.current.on('click', onClick);
+    map.current.on('click', onMapClick);
   };
 
   const disableDrawing = () => {
-    if (!map.current || !drawingClickHandler.current) return;
-    map.current.off('click', drawingClickHandler.current);
-    drawingClickHandler.current = null;
+    if (!map.current) return;
+    map.current.off('click');
   };
 
   const calculateCommute = async () => {
@@ -187,7 +159,7 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
       return;
     }
 
-    // Simulate commute calculation (in a real app, you'd use Mapbox Directions API)
+    // Simulate commute calculation
     const simulatedTime = Math.floor(Math.random() * 60) + 15;
     setCommuteTime(simulatedTime);
     toast.success(`Estimated commute time: ${simulatedTime} minutes`);
@@ -206,61 +178,18 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
   };
 
   const clearDrawing = () => {
-    if (!map.current) return;
+    if (!drawnItems.current) return;
     
-    const source = map.current.getSource('draw-area') as mapboxgl.GeoJSONSource;
-    if (source) {
-      source.setData({
-        type: 'FeatureCollection',
-        features: []
-      });
-    }
-    
+    drawnItems.current.clearLayers();
     toast.success('Search area cleared');
   };
-
-  if (!isTokenSet) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Interactive Property Map
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
-            To use the interactive map features, please enter your Mapbox public token.
-            You can get one for free at{' '}
-            <a 
-              href="https://mapbox.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary underline"
-            >
-              mapbox.com
-            </a>
-          </p>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Enter your Mapbox public token"
-              value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
-              type="password"
-            />
-            <Button onClick={handleTokenSubmit}>Load Map</Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <div className="w-full space-y-4">
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <MapPin className="h-6 w-6" />
-          Interactive Property Map
+          Interactive Property Map (Free Version)
         </h2>
         <div className="flex gap-2">
           <Button
@@ -379,6 +308,10 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
             </TabsContent>
           </Tabs>
         </div>
+      </div>
+      
+      <div className="text-center text-sm text-muted-foreground">
+        Powered by OpenStreetMap - Free and Open Source
       </div>
     </div>
   );
