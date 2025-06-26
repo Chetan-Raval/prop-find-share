@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import CreateProperty from "./pages/CreateProperty";
 import Messages from "./pages/Messages";
 import Favorites from "./pages/Favorites";
 import MortgageCalculatorPage from "./pages/MortgageCalculator";
+import InteractiveMapPage from "./pages/InteractiveMapPage";
 
 // Layout
 import RootLayout from "./layouts/RootLayout";
@@ -51,6 +51,7 @@ const App = () => (
                 <Route path="/property/:id" element={<PropertyDetail />} />
                 <Route path="/favorites" element={<Favorites />} />
                 <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
+                <Route path="/interactive-map" element={<InteractiveMapPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/about" element={<About />} />

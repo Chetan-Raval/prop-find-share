@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import PropertyCard, { PropertyData } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { mockProperties } from "@/data/mockData";
+import { Map } from "lucide-react";
 
 const Properties = () => {
   const [searchParams] = useSearchParams();
@@ -78,6 +78,14 @@ const Properties = () => {
         <p className="text-muted-foreground">
           Find the perfect property for your needs
         </p>
+        <div className="mt-4">
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/interactive-map">
+              <Map className="h-4 w-4" />
+              View on Interactive Map
+            </Link>
+          </Button>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
