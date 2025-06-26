@@ -22,7 +22,7 @@ const MortgageCalculator = () => {
   const [propertyPrice, setPropertyPrice] = useState(5000000);
   const [downPayment, setDownPayment] = useState(1000000);
   const [interestRate, setInterestRate] = useState(8.5);
-  const [loanTenure, setLoanTenure] = useState(20);
+  const [loanTenure, setLoanTenure] = useState(1); // Changed to start at 1 year
   const [monthlyIncome, setMonthlyIncome] = useState(100000);
   const [loanDetails, setLoanDetails] = useState<LoanDetails>({
     loanAmount: 0,
@@ -34,15 +34,22 @@ const MortgageCalculator = () => {
   });
 
   const calculateEMI = (principal: number, rate: number, tenure: number) => {
+    if (principal <= 0 || rate <= 0 || tenure <= 0) return 0;
+    
     const monthlyRate = rate / (12 * 100);
     const months = tenure * 12;
+    
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+    
     const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
                 (Math.pow(1 + monthlyRate, months) - 1);
-    return emi;
+    return isNaN(emi) ? 0 : emi;
   };
 
   useEffect(() => {
-    const loanAmount = propertyPrice - downPayment;
+    const loanAmount = Math.max(0, propertyPrice - downPayment);
     const emi = calculateEMI(loanAmount, interestRate, loanTenure);
     const totalAmount = emi * loanTenure * 12;
     const totalInterest = totalAmount - loanAmount;
@@ -52,12 +59,13 @@ const MortgageCalculator = () => {
       interestRate,
       loanTenure,
       emi,
-      totalInterest,
+      totalInterest: Math.max(0, totalInterest),
       totalAmount
     });
   }, [propertyPrice, downPayment, interestRate, loanTenure]);
 
   const formatCurrency = (amount: number) => {
+    if (isNaN(amount) || amount < 0) return '₹0';
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -67,6 +75,10 @@ const MortgageCalculator = () => {
   };
 
   const getAffordabilityStatus = () => {
+    if (monthlyIncome <= 0 || loanDetails.emi <= 0) {
+      return { status: 'Unknown', color: 'bg-gray-500', text: 'Enter valid income' };
+    }
+    
     const emiToIncomeRatio = (loanDetails.emi / monthlyIncome) * 100;
     if (emiToIncomeRatio <= 30) return { status: 'Excellent', color: 'bg-green-500', text: 'Very Affordable' };
     if (emiToIncomeRatio <= 40) return { status: 'Good', color: 'bg-yellow-500', text: 'Affordable' };
@@ -81,6 +93,23 @@ const MortgageCalculator = () => {
     { bank: "Axis Bank Home Loan", rate: 8.80, processing: 0.75 },
     { bank: "LIC Housing Finance", rate: 8.45, processing: 0.25 }
   ];
+
+  const handlePropertyPriceChange = (value: string) => {
+    const numValue = Number(value) || 0;
+    setPropertyPrice(numValue);
+    // Ensure down payment doesn't exceed property price
+    if (downPayment > numValue) {
+      setDownPayment(numValue * 0.2); // Set to 20% of property price
+    }
+  };
+
+  const handleDownPaymentChange = (value: string) => {
+    const numValue = Number(value) || 0;
+    // Ensure down payment doesn't exceed property price
+    if (numValue <= propertyPrice) {
+      setDownPayment(numValue);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
@@ -116,8 +145,9 @@ const MortgageCalculator = () => {
                     id="propertyPrice"
                     type="number"
                     value={propertyPrice}
-                    onChange={(e) => setPropertyPrice(Number(e.target.value))}
+                    onChange={(e) => handlePropertyPriceChange(e.target.value)}
                     className="text-lg"
+                    min="0"
                   />
                   <p className="text-sm text-gray-500">{formatCurrency(propertyPrice)}</p>
                 </div>
@@ -128,10 +158,14 @@ const MortgageCalculator = () => {
                     id="downPayment"
                     type="number"
                     value={downPayment}
-                    onChange={(e) => setDownPayment(Number(e.target.value))}
+                    onChange={(e) => handleDownPaymentChange(e.target.value)}
                     className="text-lg"
+                    min="0"
+                    max={propertyPrice}
                   />
-                  <p className="text-sm text-gray-500">{formatCurrency(downPayment)} ({((downPayment/propertyPrice)*100).toFixed(1)}%)</p>
+                  <p className="text-sm text-gray-500">
+                    {formatCurrency(downPayment)} ({propertyPrice > 0 ? ((downPayment/propertyPrice)*100).toFixed(1) : 0}%)
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -147,12 +181,12 @@ const MortgageCalculator = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Loan Tenure: {loanTenure} years</Label>
+                  <Label>Loan Tenure: {loanTenure} {loanTenure === 1 ? 'year' : 'years'}</Label>
                   <Slider
                     value={[loanTenure]}
                     onValueChange={(value) => setLoanTenure(value[0])}
                     max={30}
-                    min={5}
+                    min={1}
                     step={1}
                     className="w-full"
                   />
@@ -169,43 +203,45 @@ const MortgageCalculator = () => {
                 <CardDescription>Your EMI and loan breakdown</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-blue-50 rounded-lg">
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-blue-600 font-medium">Monthly EMI</p>
                   <p className="text-2xl font-bold text-blue-700">{formatCurrency(loanDetails.emi)}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 bg-gray-50 rounded-lg border">
                     <p className="text-xs text-gray-600">Loan Amount</p>
-                    <p className="font-semibold">{formatCurrency(loanDetails.loanAmount)}</p>
+                    <p className="font-semibold text-gray-900">{formatCurrency(loanDetails.loanAmount)}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 bg-gray-50 rounded-lg border">
                     <p className="text-xs text-gray-600">Total Interest</p>
-                    <p className="font-semibold">{formatCurrency(loanDetails.totalInterest)}</p>
+                    <p className="font-semibold text-gray-900">{formatCurrency(loanDetails.totalInterest)}</p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-orange-50 rounded-lg">
+                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
                   <p className="text-sm text-orange-600 font-medium">Total Amount Payable</p>
                   <p className="text-xl font-bold text-orange-700">{formatCurrency(loanDetails.totalAmount)}</p>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Principal</span>
-                    <span>{((loanDetails.loanAmount/loanDetails.totalAmount)*100).toFixed(1)}%</span>
+                {loanDetails.totalAmount > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-gray-700">
+                      <span>Principal</span>
+                      <span>{((loanDetails.loanAmount/loanDetails.totalAmount)*100).toFixed(1)}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-700">
+                      <span>Interest</span>
+                      <span>{((loanDetails.totalInterest/loanDetails.totalAmount)*100).toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div 
+                        className="bg-blue-500 h-3 rounded-full transition-all duration-300" 
+                        style={{width: `${(loanDetails.loanAmount/loanDetails.totalAmount)*100}%`}}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Interest</span>
-                    <span>{((loanDetails.totalInterest/loanDetails.totalAmount)*100).toFixed(1)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div 
-                      className="bg-blue-500 h-3 rounded-full" 
-                      style={{width: `${(loanDetails.loanAmount/loanDetails.totalAmount)*100}%`}}
-                    ></div>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -227,18 +263,19 @@ const MortgageCalculator = () => {
                   id="monthlyIncome"
                   type="number"
                   value={monthlyIncome}
-                  onChange={(e) => setMonthlyIncome(Number(e.target.value))}
+                  onChange={(e) => setMonthlyIncome(Number(e.target.value) || 0)}
                   className="text-lg"
+                  min="0"
                 />
                 <p className="text-sm text-gray-500">{formatCurrency(monthlyIncome)}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
                     <h3 className="font-semibold text-blue-900 mb-2">EMI to Income Ratio</h3>
                     <p className="text-2xl font-bold text-blue-700">
-                      {((loanDetails.emi / monthlyIncome) * 100).toFixed(1)}%
+                      {monthlyIncome > 0 ? ((loanDetails.emi / monthlyIncome) * 100).toFixed(1) : 0}%
                     </p>
                     <Badge className={`mt-2 ${getAffordabilityStatus().color} text-white`}>
                       {getAffordabilityStatus().status}
@@ -246,38 +283,38 @@ const MortgageCalculator = () => {
                     <p className="text-sm text-blue-600 mt-1">{getAffordabilityStatus().text}</p>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 p-4 bg-white rounded-lg border">
                     <div className="flex justify-between">
-                      <span>Monthly EMI</span>
-                      <span className="font-semibold">{formatCurrency(loanDetails.emi)}</span>
+                      <span className="text-gray-600">Monthly EMI</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(loanDetails.emi)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Remaining Income</span>
+                      <span className="text-gray-600">Remaining Income</span>
                       <span className="font-semibold text-green-600">
-                        {formatCurrency(monthlyIncome - loanDetails.emi)}
+                        {formatCurrency(Math.max(0, monthlyIncome - loanDetails.emi))}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Affordability Guidelines</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900">Affordability Guidelines</h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-3 p-2 rounded">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span>Up to 30%: Excellent</span>
+                      <span className="text-gray-700">Up to 30%: Excellent</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3 p-2 rounded">
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span>30-40%: Good</span>
+                      <span className="text-gray-700">30-40%: Good</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3 p-2 rounded">
                       <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                      <span>40-50%: Moderate</span>
+                      <span className="text-gray-700">40-50%: Moderate</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3 p-2 rounded">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span>Above 50%: High Risk</span>
+                      <span className="text-gray-700">Above 50%: High Risk</span>
                     </div>
                   </div>
                 </div>
@@ -294,27 +331,27 @@ const MortgageCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3">Lender</th>
-                      <th className="text-left p-3">Interest Rate</th>
-                      <th className="text-left p-3">Processing Fee</th>
-                      <th className="text-left p-3">EMI</th>
-                      <th className="text-left p-3">Total Interest</th>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left p-3 font-semibold text-gray-900">Lender</th>
+                      <th className="text-left p-3 font-semibold text-gray-900">Interest Rate</th>
+                      <th className="text-left p-3 font-semibold text-gray-900">Processing Fee</th>
+                      <th className="text-left p-3 font-semibold text-gray-900">EMI</th>
+                      <th className="text-left p-3 font-semibold text-gray-900">Total Interest</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loanComparisons.map((loan, index) => {
                       const emi = calculateEMI(loanDetails.loanAmount, loan.rate, loanTenure);
-                      const totalInterest = (emi * loanTenure * 12) - loanDetails.loanAmount;
+                      const totalInterest = Math.max(0, (emi * loanTenure * 12) - loanDetails.loanAmount);
                       return (
-                        <tr key={index} className="border-b hover:bg-gray-50">
-                          <td className="p-3 font-medium">{loan.bank}</td>
-                          <td className="p-3">{loan.rate}%</td>
-                          <td className="p-3">{loan.processing}%</td>
-                          <td className="p-3 font-semibold">{formatCurrency(emi)}</td>
-                          <td className="p-3">{formatCurrency(totalInterest)}</td>
+                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="p-3 font-medium text-gray-900">{loan.bank}</td>
+                          <td className="p-3 text-gray-700">{loan.rate}%</td>
+                          <td className="p-3 text-gray-700">{loan.processing}%</td>
+                          <td className="p-3 font-semibold text-blue-600">{formatCurrency(emi)}</td>
+                          <td className="p-3 text-gray-900">{formatCurrency(totalInterest)}</td>
                         </tr>
                       );
                     })}
