@@ -30,6 +30,7 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
   const [commuteTime, setCommuteTime] = useState<number | null>(null);
   const [nearbyAmenities, setNearbyAmenities] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
+  const drawingClickHandler = useRef<((e: mapboxgl.MapMouseEvent) => void) | null>(null);
 
   const sampleProperties = [
     { id: '1', title: 'Luxury Villa', price: 2500000, location: 'Mumbai', coordinates: [72.8777, 19.0760] as [number, number] },
@@ -161,18 +162,23 @@ const InteractiveMap = ({ properties = [], height = "500px" }: InteractiveMapPro
           });
         }
 
-        map.current!.off('click', onClick);
+        if (drawingClickHandler.current) {
+          map.current!.off('click', drawingClickHandler.current);
+          drawingClickHandler.current = null;
+        }
         setDrawingMode(false);
         toast.success('Search area defined! Properties in this area will be highlighted.');
       }
     };
 
+    drawingClickHandler.current = onClick;
     map.current.on('click', onClick);
   };
 
   const disableDrawing = () => {
-    if (!map.current) return;
-    map.current.off('click');
+    if (!map.current || !drawingClickHandler.current) return;
+    map.current.off('click', drawingClickHandler.current);
+    drawingClickHandler.current = null;
   };
 
   const calculateCommute = async () => {
