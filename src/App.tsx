@@ -19,6 +19,7 @@ import Contact from "./pages/Contact";
 import CreateProperty from "./pages/CreateProperty";
 import Messages from "./pages/Messages";
 import Favorites from "./pages/Favorites";
+import MortgageCalculatorPage from "./pages/MortgageCalculator";
 
 // Layout
 import RootLayout from "./layouts/RootLayout";
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/property/:id" element={<PropertyDetail />} />
                 <Route path="/favorites" element={<Favorites />} />
+                <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/about" element={<About />} />
