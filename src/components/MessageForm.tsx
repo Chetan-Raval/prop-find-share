@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { showSuccessToast, showErrorToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { messageService } from "@/services/messageService";
@@ -22,13 +22,13 @@ const MessageForm = ({ recipientId, propertyId }: MessageFormProps) => {
     e.preventDefault();
     
     if (!user) {
-      toast.error("Please log in to send messages");
+      showErrorToast("Authentication Required", "Please log in to send messages");
       navigate("/login");
       return;
     }
     
     if (!message.trim()) {
-      toast.error("Please enter a message");
+      showErrorToast("Message Required", "Please enter a message before sending");
       return;
     }
     
@@ -41,12 +41,12 @@ const MessageForm = ({ recipientId, propertyId }: MessageFormProps) => {
         content: message.trim(),
       });
       
-      toast.success("Message sent successfully!");
+      showSuccessToast("Message Sent Successfully!", "Your message has been delivered to the vendor");
       setMessage("");
     } catch (error: any) {
       console.error("Send message error:", error);
       const errorMessage = error.response?.data?.message || "Failed to send message. Please try again.";
-      toast.error(errorMessage);
+      showErrorToast("Message Failed", errorMessage);
     } finally {
       setIsSending(false);
     }
