@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Clock, School, Hospital, ShoppingCart, Navigation, Loader2, Crosshair, Zap } from 'lucide-react';
+import { MapPin, Clock, School, Hospital, ShoppingCart, Navigation, Loader2, Crosshair, Zap, Car } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface InteractiveMapProps {
@@ -27,6 +26,8 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
   const [drawingMode, setDrawingMode] = useState(false);
   const [commuteFrom, setCommuteFrom] = useState('');
   const [commuteTime, setCommuteTime] = useState<number | null>(null);
+  const [commuteDistance, setCommuteDistance] = useState<string>('');
+  const [isCalculatingCommute, setIsCalculatingCommute] = useState(false);
   const [nearbyAmenities, setNearbyAmenities] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
@@ -35,6 +36,8 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
   const drawnItems = useRef<L.FeatureGroup | null>(null);
   const markers = useRef<L.Marker[]>([]);
   const userMarker = useRef<L.Marker | null>(null);
+  const routeLayer = useRef<L.Polyline | null>(null);
+  const mapClickHandler = useRef<((e: L.LeafletMouseEvent) => void) | null>(null);
 
   const sampleProperties = [
     { id: '1', title: 'Luxury Villa', price: 2500000, location: 'Mumbai', coordinates: [19.0760, 72.8777] as [number, number] },
@@ -45,6 +48,49 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
   ];
 
   const displayProperties = properties.length > 0 ? properties : sampleProperties;
+
+  // Geocoding function to convert address to coordinates
+  const geocodeAddress = async (address: string): Promise<[number, number] | null> => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+      return null;
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      return null;
+    }
+  };
+
+  // Calculate route using OSRM (Open Source Routing Machine)
+  const calculateRoute = async (start: [number, number], end: [number, number]) => {
+    try {
+      const response = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`
+      );
+      const data = await response.json();
+      
+      if (data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        const duration = Math.round(route.duration / 60); // Convert to minutes
+        const distance = (route.distance / 1000).toFixed(1); // Convert to km
+        const coordinates = route.geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
+        
+        return {
+          duration,
+          distance,
+          coordinates
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Routing error:', error);
+      return null;
+    }
+  };
 
   // Get user's current location
   const getCurrentLocation = () => {
@@ -235,36 +281,92 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
         tempMarkers.forEach(marker => map.current!.removeLayer(marker));
         tempMarkers = [];
         
-        map.current!.off('click', onMapClick);
+        if (mapClickHandler.current) {
+          map.current!.off('click', mapClickHandler.current);
+        }
         setDrawingMode(false);
         toast.success('🎉 Search area defined! Properties in this area are highlighted.');
       }
     };
 
+    mapClickHandler.current = onMapClick;
     map.current.on('click', onMapClick);
   };
 
   const disableDrawing = () => {
-    if (!map.current) return;
-    map.current.off('click');
+    if (!map.current || !mapClickHandler.current) return;
+    map.current.off('click', mapClickHandler.current);
   };
 
   const calculateCommute = async () => {
-    if (!commuteFrom.trim() || !selectedProperty) {
-      toast.error('Please select a property and location');
+    if (!commuteFrom.trim()) {
+      toast.error('Please enter a location or use your current location');
       return;
     }
 
-    toast.loading('Calculating commute time...', { duration: 2000 });
-    
-    // Simulate API call with realistic delay
-    setTimeout(() => {
-      const simulatedTime = Math.floor(Math.random() * 60) + 15;
-      setCommuteTime(simulatedTime);
-      toast.success(`🚗 Estimated commute time: ${simulatedTime} minutes`, {
-        duration: 4000
-      });
-    }, 2000);
+    if (!selectedProperty) {
+      toast.error('Please select a property first by clicking on a property marker');
+      return;
+    }
+
+    setIsCalculatingCommute(true);
+    setCommuteTime(null);
+    setCommuteDistance('');
+
+    try {
+      let startCoords: [number, number] | null = null;
+
+      // If user selected their current location
+      if (commuteFrom === 'Your Current Location' && userLocation) {
+        startCoords = userLocation;
+      } else {
+        // Geocode the address
+        toast.loading('Finding location...', { duration: 2000 });
+        startCoords = await geocodeAddress(commuteFrom);
+        
+        if (!startCoords) {
+          toast.error('Could not find the location. Please try a more specific address.');
+          setIsCalculatingCommute(false);
+          return;
+        }
+      }
+
+      // Calculate route
+      toast.loading('Calculating route...', { duration: 3000 });
+      const routeData = await calculateRoute(startCoords, selectedProperty.coordinates);
+
+      if (routeData) {
+        setCommuteTime(routeData.duration);
+        setCommuteDistance(routeData.distance);
+
+        // Clear previous route
+        if (routeLayer.current && map.current) {
+          map.current.removeLayer(routeLayer.current);
+        }
+
+        // Add route to map
+        if (map.current) {
+          routeLayer.current = L.polyline(routeData.coordinates, {
+            color: '#ef4444',
+            weight: 4,
+            opacity: 0.8
+          }).addTo(map.current);
+
+          // Fit map to show the route
+          const bounds = L.latLngBounds([startCoords, selectedProperty.coordinates]);
+          map.current.fitBounds(bounds, { padding: [20, 20] });
+        }
+
+        toast.success(`🚗 Route calculated! ${routeData.duration} minutes by car (${routeData.distance} km)`);
+      } else {
+        toast.error('Could not calculate the route. Please try again.');
+      }
+    } catch (error) {
+      console.error('Commute calculation error:', error);
+      toast.error('Error calculating commute. Please try again.');
+    } finally {
+      setIsCalculatingCommute(false);
+    }
   };
 
   const loadNearbyAmenities = (coordinates: [number, number]) => {
@@ -283,7 +385,18 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
     if (!drawnItems.current) return;
     
     drawnItems.current.clearLayers();
-    toast.success('🧹 Search area cleared');
+    
+    // Clear route if exists
+    if (routeLayer.current && map.current) {
+      map.current.removeLayer(routeLayer.current);
+      routeLayer.current = null;
+    }
+    
+    // Reset commute data
+    setCommuteTime(null);
+    setCommuteDistance('');
+    
+    toast.success('🧹 Search area and routes cleared');
   };
 
   return (
@@ -379,12 +492,19 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {selectedProperty && (
+                  {selectedProperty ? (
                     <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 animate-scale-in">
                       <p className="font-bold text-blue-600">{selectedProperty.title}</p>
                       <p className="text-sm text-gray-600 flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
                         {selectedProperty.location}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                      <p className="text-sm text-orange-600 flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Please click on a property marker to select it
                       </p>
                     </div>
                   )}
@@ -395,25 +515,46 @@ const InteractiveMap = ({ properties = [], height = "600px" }: InteractiveMapPro
                       From Location
                     </label>
                     <Input
-                      placeholder="Enter your location or use current location"
+                      placeholder="Enter address (e.g., 'Mumbai Central') or use current location"
                       value={commuteFrom}
                       onChange={(e) => setCommuteFrom(e.target.value)}
                       className="border-blue-200 focus:border-blue-400"
                     />
+                    <p className="text-xs text-gray-500">
+                      Try: "Connaught Place Delhi", "Marine Drive Mumbai", or use "Get My Location" button
+                    </p>
                   </div>
                   
                   <Button 
                     onClick={calculateCommute} 
                     className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
-                    disabled={!selectedProperty}
+                    disabled={!selectedProperty || isCalculatingCommute}
                   >
-                    Calculate Journey Time
+                    {isCalculatingCommute ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Calculating...
+                      </>
+                    ) : (
+                      <>
+                        <Car className="h-4 w-4 mr-2" />
+                        Calculate Journey Time
+                      </>
+                    )}
                   </Button>
                   
                   {commuteTime && (
                     <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg text-center border border-green-200 animate-scale-in">
-                      <p className="font-bold text-2xl text-green-600">{commuteTime} minutes</p>
-                      <p className="text-sm text-gray-600">Estimated travel time</p>
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <Car className="h-5 w-5 text-green-600" />
+                        <p className="font-bold text-2xl text-green-600">{commuteTime} min</p>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Distance: {commuteDistance} km • By car
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Route shown on map in red
+                      </p>
                     </div>
                   )}
                 </CardContent>
