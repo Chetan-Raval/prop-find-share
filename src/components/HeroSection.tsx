@@ -13,7 +13,7 @@ const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
@@ -74,7 +74,7 @@ const CustomCursor = () => {
   );
 };
 
-// Animated SVG Icons with better colors
+// Animated SVG Icons with vibrant colors
 const AnimatedHouseIcon = ({ className = "" }) => (
   <motion.div
     className={`relative ${className}`}
@@ -275,7 +275,7 @@ const HeroSection = () => {
   // Text animation effect
   useEffect(() => {
     const currentWord = swappingTexts[currentTextIndex];
-    let timeoutId;
+    let timeoutId: NodeJS.Timeout;
 
     if (isTyping) {
       if (displayText.length < currentWord.length) {
@@ -637,7 +637,7 @@ const HeroSection = () => {
               </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Enhanced CSS Animations */}
