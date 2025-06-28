@@ -4,38 +4,109 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Home as HomeIcon, Building, ArrowRight, CheckCircle, Star, Heart, Zap } from "lucide-react";
+import { Search, MapPin, Home as HomeIcon, Building, ArrowRight, CheckCircle, Star, Heart, Zap, Sparkles, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
-// SVG Components for custom animations
+// Custom Cursor Component
+const CustomCursor = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseEnter = () => setIsHovering(true);
+    const handleMouseLeave = () => setIsHovering(false);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    
+    // Add hover listeners to interactive elements
+    const interactiveElements = document.querySelectorAll('button, a, input, select, [role="button"]');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', handleMouseEnter);
+      el.addEventListener('mouseleave', handleMouseLeave);
+    });
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      interactiveElements.forEach(el => {
+        el.removeEventListener('mouseenter', handleMouseEnter);
+        el.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[9999]">
+      <motion.div
+        className="absolute w-8 h-8 mix-blend-difference"
+        animate={{
+          x: mousePosition.x - 16,
+          y: mousePosition.y - 16,
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 28
+        }}
+      >
+        <div className="w-full h-full bg-white rounded-full border-2 border-white shadow-lg" />
+      </motion.div>
+      
+      <motion.div
+        className="absolute w-2 h-2"
+        animate={{
+          x: mousePosition.x - 4,
+          y: mousePosition.y - 4,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 800,
+          damping: 35
+        }}
+      >
+        <div className="w-full h-full bg-white rounded-full" />
+      </motion.div>
+    </div>
+  );
+};
+
+// Animated SVG Icons with better colors
 const AnimatedHouseIcon = ({ className = "" }) => (
   <motion.div
     className={`relative ${className}`}
     animate={{
-      y: [0, -10, 0],
-      rotateY: [0, 15, 0],
+      y: [0, -15, 0],
+      rotateY: [0, 20, 0],
     }}
     transition={{
-      duration: 4,
+      duration: 5,
       repeat: Infinity,
       ease: "easeInOut"
     }}
   >
     <motion.svg
-      width="120"
-      height="120"
-      viewBox="0 0 120 120"
-      className="drop-shadow-2xl"
-      whileHover={{ scale: 1.1, rotateZ: 5 }}
+      width="140"
+      height="140"
+      viewBox="0 0 140 140"
+      className="drop-shadow-2xl filter"
+      whileHover={{ scale: 1.2, rotateZ: 10 }}
     >
       <defs>
         <linearGradient id="houseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#60A5FA" />
-          <stop offset="50%" stopColor="#A78BFA" />
-          <stop offset="100%" stopColor="#F472B6" />
+          <stop offset="0%" stopColor="#FF6B6B" />
+          <stop offset="50%" stopColor="#4ECDC4" />
+          <stop offset="100%" stopColor="#45B7D1" />
+        </linearGradient>
+        <linearGradient id="roofGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FF8E53" />
+          <stop offset="100%" stopColor="#FF6B6B" />
         </linearGradient>
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
           <feMerge> 
             <feMergeNode in="coloredBlur"/>
             <feMergeNode in="SourceGraphic"/>
@@ -45,31 +116,31 @@ const AnimatedHouseIcon = ({ className = "" }) => (
       
       {/* House base */}
       <motion.rect
-        x="30" y="60" width="60" height="45"
+        x="35" y="65" width="70" height="50"
         fill="url(#houseGradient)"
-        rx="8"
+        rx="10"
         filter="url(#glow)"
         animate={{
           scale: [1, 1.05, 1],
         }}
-        transition={{ duration: 2, repeat: Infinity }}
+        transition={{ duration: 3, repeat: Infinity }}
       />
       
       {/* Roof */}
       <motion.polygon
-        points="25,65 60,35 95,65"
-        fill="#FF6B6B"
+        points="30,70 70,40 110,70"
+        fill="url(#roofGradient)"
         filter="url(#glow)"
         animate={{
-          rotateZ: [0, 2, 0],
+          rotateZ: [0, 3, 0],
         }}
-        transition={{ duration: 3, repeat: Infinity }}
+        transition={{ duration: 4, repeat: Infinity }}
       />
       
       {/* Door */}
       <motion.rect
-        x="50" y="80" width="20" height="25"
-        fill="#4ECDC4"
+        x="60" y="85" width="20" height="30"
+        fill="#FFA726"
         rx="10"
         animate={{
           scale: [1, 1.1, 1],
@@ -79,143 +150,101 @@ const AnimatedHouseIcon = ({ className = "" }) => (
       
       {/* Windows */}
       <motion.circle
-        cx="40" cy="72" r="6"
-        fill="#FFE66D"
+        cx="50" cy="75" r="7"
+        fill="#FFE082"
         animate={{
-          opacity: [0.7, 1, 0.7],
+          opacity: [0.8, 1, 0.8],
+          scale: [1, 1.1, 1],
         }}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        transition={{ duration: 2, repeat: Infinity }}
       />
       <motion.circle
-        cx="80" cy="72" r="6"
-        fill="#FFE66D"
+        cx="90" cy="75" r="7"
+        fill="#FFE082"
         animate={{
-          opacity: [1, 0.7, 1],
+          opacity: [1, 0.8, 1],
+          scale: [1.1, 1, 1.1],
         }}
-        transition={{ duration: 1.5, repeat: Infinity, delay: 0.7 }}
+        transition={{ duration: 2, repeat: Infinity, delay: 1 }}
       />
       
-      {/* Chimney with smoke */}
-      <rect x="75" y="45" width="8" height="20" fill="#8B4513" />
-      <motion.circle
-        cx="79" cy="40" r="2"
-        fill="#CCCCCC"
-        animate={{
-          y: [0, -20, -40],
-          opacity: [1, 0.5, 0],
-          scale: [1, 1.5, 2],
-        }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-      />
-      <motion.circle
-        cx="82" cy="35" r="2"
-        fill="#CCCCCC"
-        animate={{
-          y: [0, -25, -50],
-          opacity: [1, 0.5, 0],
-          scale: [1, 1.8, 2.5],
-        }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-      />
+      {/* Animated Hearts floating around */}
+      <motion.g>
+        <motion.path
+          d="M45,50 C45,45 40,45 40,50 C40,45 35,45 35,50 C35,55 40,60 45,60 C50,55 50,50 45,50 Z"
+          fill="#FF69B4"
+          animate={{
+            y: [0, -20, -40],
+            opacity: [1, 0.7, 0],
+            scale: [1, 1.3, 1.8],
+          }}
+          transition={{ duration: 3, repeat: Infinity, delay: 0 }}
+        />
+        <motion.path
+          d="M95,45 C95,40 90,40 90,45 C90,40 85,40 85,45 C85,50 90,55 95,55 C100,50 100,45 95,45 Z"
+          fill="#FF1493"
+          animate={{
+            y: [0, -25, -50],
+            opacity: [1, 0.5, 0],
+            scale: [1, 1.5, 2],
+          }}
+          transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+        />
+      </motion.g>
     </motion.svg>
   </motion.div>
 );
 
-const FloatingArrow = ({ delay = 0, direction = "right" }) => (
+// Interactive Floating Arrow with better colors
+const FloatingArrow = ({ delay = 0, direction = "right", color = "#00D4AA" }) => (
   <motion.div
     className="absolute"
-    initial={{ opacity: 0, x: direction === "right" ? -20 : 20 }}
+    initial={{ opacity: 0, x: direction === "right" ? -30 : 30 }}
     animate={{
       opacity: [0, 1, 0],
-      x: direction === "right" ? [0, 100, 200] : [0, -100, -200],
-      y: [0, -10, 0],
+      x: direction === "right" ? [0, 120, 240] : [0, -120, -240],
+      y: [0, -15, 0],
+      rotate: [0, 360, 720],
     }}
     transition={{
-      duration: 3,
+      duration: 4,
       repeat: Infinity,
       delay,
       ease: "easeInOut"
     }}
   >
-    <ArrowRight className={`w-6 h-6 text-cyan-400 ${direction === "left" ? "rotate-180" : ""}`} />
+    <div className="p-2 rounded-full" style={{ backgroundColor: color + '20', border: `2px solid ${color}` }}>
+      <ArrowRight className={`w-6 h-6 ${direction === "left" ? "rotate-180" : ""}`} style={{ color }} />
+    </div>
   </motion.div>
 );
 
-const InteractiveOrb = ({ size = "w-20 h-20", color = "bg-cyan-400", delay = 0, className = "" }) => (
+// Enhanced Interactive Orb with vibrant colors
+const InteractiveOrb = ({ size = "w-24 h-24", delay = 0, className = "", colors = ["#FF6B6B", "#4ECDC4", "#45B7D1"] }) => (
   <motion.div
-    className={`${size} ${color} rounded-full absolute ${className} cursor-pointer`}
+    className={`${size} rounded-full absolute ${className} cursor-pointer`}
     style={{
-      background: `radial-gradient(circle, ${color.replace('bg-', '').replace('-400', '')}, transparent)`,
-      filter: 'blur(1px)',
+      background: `radial-gradient(circle, ${colors[0]}, ${colors[1]}, ${colors[2]})`,
+      boxShadow: `0 0 20px ${colors[0]}40`,
     }}
     animate={{
-      scale: [1, 1.5, 1],
-      opacity: [0.3, 0.8, 0.3],
-      x: [0, 50, 0],
-      y: [0, -30, 0],
+      scale: [1, 1.6, 1],
+      opacity: [0.4, 0.9, 0.4],
+      x: [0, 60, 0],
+      y: [0, -40, 0],
     }}
     transition={{
-      duration: 4 + delay,
+      duration: 5 + delay,
       repeat: Infinity,
       ease: "easeInOut",
     }}
     whileHover={{
-      scale: 2,
+      scale: 2.2,
       opacity: 1,
       transition: { duration: 0.3 }
     }}
   />
 );
-
-const CursorTrail = () => {
-  const [trails, setTrails] = useState([]);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      
-      setTrails(prev => [
-        ...prev.slice(-10),
-        {
-          id: Date.now(),
-          x: e.clientX,
-          y: e.clientY,
-        }
-      ]);
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-  
-  return (
-    <div className="fixed inset-0 pointer-events-none z-50">
-      {trails.map((trail, index) => (
-        <motion.div
-          key={trail.id}
-          className="absolute w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
-          initial={{
-            x: trail.x - 8,
-            y: trail.y - 8,
-            scale: 1,
-            opacity: 0.8,
-          }}
-          animate={{
-            scale: 0,
-            opacity: 0,
-          }}
-          transition={{
-            duration: 0.6,
-            ease: "easeOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -225,8 +254,6 @@ const HeroSection = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
 
   const swappingTexts = [
     "Dream Home",
@@ -243,13 +270,6 @@ const HeroSection = () => {
 
   useEffect(() => {
     setIsVisible(true);
-    
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   // Text animation effect
@@ -283,54 +303,32 @@ const HeroSection = () => {
 
   return (
     <div className="hero-section relative flex min-h-screen items-center justify-center overflow-hidden">
-      <CursorTrail />
+      <CustomCursor />
       
-      {/* Ultra Dynamic Animated Background */}
+      {/* Ultra Dynamic Animated Background with vibrant colors */}
       <div className="absolute inset-0 z-0">
         {/* Dynamic Gradient Mesh */}
         <motion.div 
           className="absolute inset-0"
           animate={{
             background: [
-              "radial-gradient(circle at 20% 20%, #60A5FA 0%, transparent 50%), radial-gradient(circle at 80% 80%, #A78BFA 0%, transparent 50%), radial-gradient(circle at 40% 40%, #F472B6 0%, transparent 50%)",
-              "radial-gradient(circle at 60% 20%, #34D399 0%, transparent 50%), radial-gradient(circle at 20% 80%, #F59E0B 0%, transparent 50%), radial-gradient(circle at 80% 40%, #EF4444 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 20%, #60A5FA 0%, transparent 50%), radial-gradient(circle at 80% 80%, #A78BFA 0%, transparent 50%), radial-gradient(circle at 40% 40%, #F472B6 0%, transparent 50%)"
+              "radial-gradient(circle at 20% 20%, #FF6B6B 0%, transparent 50%), radial-gradient(circle at 80% 80%, #4ECDC4 0%, transparent 50%), radial-gradient(circle at 40% 40%, #45B7D1 0%, transparent 50%)",
+              "radial-gradient(circle at 60% 20%, #26D0CE 0%, transparent 50%), radial-gradient(circle at 20% 80%, #FF8A65 0%, transparent 50%), radial-gradient(circle at 80% 40%, #AB47BC 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 20%, #FF6B6B 0%, transparent 50%), radial-gradient(circle at 80% 80%, #4ECDC4 0%, transparent 50%), radial-gradient(circle at 40% 40%, #45B7D1 0%, transparent 50%)"
             ]
           }}
           transition={{ duration: 8, repeat: Infinity }}
         />
         
-        {/* Interactive Orbs */}
-        <InteractiveOrb size="w-32 h-32" color="bg-cyan-400" delay={0} className="top-20 left-20" />
-        <InteractiveOrb size="w-24 h-24" color="bg-purple-400" delay={1} className="top-40 right-32" />
-        <InteractiveOrb size="w-16 h-16" color="bg-pink-400" delay={2} className="bottom-40 left-32" />
-        <InteractiveOrb size="w-20 h-20" color="bg-yellow-400" delay={1.5} className="bottom-20 right-20" />
+        {/* Interactive Orbs with vibrant colors */}
+        <InteractiveOrb size="w-36 h-36" colors={["#FF6B6B", "#FF8E53", "#FFA726"]} delay={0} className="top-20 left-20" />
+        <InteractiveOrb size="w-28 h-28" colors={["#4ECDC4", "#26D0CE", "#00BCD4"]} delay={1} className="top-40 right-32" />
+        <InteractiveOrb size="w-20 h-20" colors={["#AB47BC", "#E91E63", "#FF69B4"]} delay={2} className="bottom-40 left-32" />
+        <InteractiveOrb size="w-24 h-24" colors={["#FFD54F", "#FFC107", "#FF9800"]} delay={1.5} className="bottom-20 right-20" />
         
-        {/* SVG Pattern Background */}
-        <motion.div
-          className="absolute inset-0 opacity-20"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        >
-          <svg width="100%" height="100%">
-            <defs>
-              <pattern id="heroPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                <circle cx="50" cy="50" r="2" fill="url(#patternGradient)" />
-                <circle cx="25" cy="25" r="1" fill="url(#patternGradient)" />
-                <circle cx="75" cy="75" r="1" fill="url(#patternGradient)" />
-              </pattern>
-              <linearGradient id="patternGradient">
-                <stop offset="0%" stopColor="#60A5FA" />
-                <stop offset="100%" stopColor="#A78BFA" />
-              </linearGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#heroPattern)" />
-          </svg>
-        </motion.div>
-
-        {/* Floating Elements */}
+        {/* Floating Elements with better colors */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(15)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute"
@@ -339,35 +337,27 @@ const HeroSection = () => {
                 top: `${Math.random() * 100}%`,
               }}
               animate={{
-                y: [0, -100, 0],
-                x: [0, Math.random() * 200 - 100, 0],
+                y: [0, -120, 0],
+                x: [0, Math.random() * 240 - 120, 0],
                 rotate: [0, 360],
-                scale: [1, 1.5, 1],
-                opacity: [0.3, 0.8, 0.3],
+                scale: [1, 1.8, 1],
+                opacity: [0.4, 1, 0.4],
               }}
               transition={{
-                duration: 8 + Math.random() * 12,
+                duration: 10 + Math.random() * 15,
                 repeat: Infinity,
-                delay: Math.random() * 5,
+                delay: Math.random() * 6,
                 ease: "easeInOut",
               }}
             >
-              {i % 4 === 0 ? <Star className="w-8 h-8 text-cyan-400" /> :
-               i % 4 === 1 ? <Heart className="w-6 h-6 text-pink-400" /> :
-               i % 4 === 2 ? <Zap className="w-7 h-7 text-yellow-400" /> :
-               <HomeIcon className="w-6 h-6 text-purple-400" />}
+              {i % 5 === 0 ? <Star className="w-10 h-10 text-yellow-400" fill="currentColor" /> :
+               i % 5 === 1 ? <Heart className="w-8 h-8 text-pink-400" fill="currentColor" /> :
+               i % 5 === 2 ? <Zap className="w-9 h-9 text-blue-400" fill="currentColor" /> :
+               i % 5 === 3 ? <HomeIcon className="w-8 h-8 text-green-400" fill="currentColor" /> :
+               <Sparkles className="w-7 h-7 text-purple-400" fill="currentColor" />}
             </motion.div>
           ))}
         </div>
-
-        {/* Dynamic Light Rays */}
-        <motion.div
-          className="absolute inset-0 overflow-hidden"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        >
-          <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-conic from-transparent via-cyan-500/10 to-transparent" />
-        </motion.div>
       </div>
 
       {/* Main Content */}
@@ -376,46 +366,55 @@ const HeroSection = () => {
       }`}>
         
         {/* Animated House Icon */}
-        <motion.div
-          className="absolute -top-10 -right-10 md:-top-20 md:-right-20"
-          onHoverStart={() => setIsHovering(true)}
-          onHoverEnd={() => setIsHovering(false)}
-        >
+        <motion.div className="absolute -top-10 -right-10 md:-top-20 md:-right-20">
           <AnimatedHouseIcon />
-          {/* Floating Arrows around house */}
-          <FloatingArrow delay={0} direction="right" />
-          <FloatingArrow delay={1} direction="left" />
-          <FloatingArrow delay={2} direction="right" />
+          {/* Floating Arrows with vibrant colors */}
+          <FloatingArrow delay={0} direction="right" color="#FF6B6B" />
+          <FloatingArrow delay={1} direction="left" color="#4ECDC4" />
+          <FloatingArrow delay={2} direction="right" color="#45B7D1" />
         </motion.div>
 
-        {/* Interactive Icons */}
+        {/* Interactive Icons with vibrant colors */}
         <div className="absolute inset-0 pointer-events-none">
-          {[HomeIcon, Building, MapPin, Star, Heart].map((Icon, i) => (
+          {[
+            { Icon: HomeIcon, color: "#FF6B6B" },
+            { Icon: Building, color: "#4ECDC4" },
+            { Icon: MapPin, color: "#45B7D1" },
+            { Icon: Star, color: "#FFD54F" },
+            { Icon: TrendingUp, color: "#AB47BC" }
+          ].map((item, i) => (
             <motion.div
               key={i}
               className="absolute pointer-events-auto cursor-pointer"
               style={{
-                left: `${20 + i * 15}%`,
-                top: `${20 + i * 10}%`,
+                left: `${15 + i * 17}%`,
+                top: `${15 + i * 12}%`,
               }}
               animate={{
-                y: [0, -30, 0],
-                rotate: [0, 15, 0],
-                scale: [1, 1.3, 1],
+                y: [0, -35, 0],
+                rotate: [0, 20, 0],
+                scale: [1, 1.4, 1],
               }}
               transition={{
-                duration: 4 + i,
+                duration: 5 + i,
                 repeat: Infinity,
-                delay: i * 0.5,
+                delay: i * 0.6,
               }}
               whileHover={{ 
-                scale: 1.5, 
+                scale: 1.8, 
                 rotate: 360,
-                transition: { duration: 0.5 }
+                transition: { duration: 0.6 }
               }}
             >
-              <div className="p-4 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md rounded-full border border-white/30 shadow-2xl">
-                <Icon className="w-8 h-8 text-white drop-shadow-lg" />
+              <div 
+                className="p-5 backdrop-blur-md rounded-full border-2 shadow-2xl"
+                style={{
+                  backgroundColor: item.color + '20',
+                  borderColor: item.color,
+                  boxShadow: `0 0 25px ${item.color}40`
+                }}
+              >
+                <item.Icon className="w-8 h-8" style={{ color: item.color }} />
               </div>
             </motion.div>
           ))}
@@ -426,20 +425,27 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          {/* Main Heading with 3D Effect */}
+          {/* Main Heading with vibrant 3D Effect */}
           <h1 className="mb-8 text-4xl font-black md:text-7xl lg:text-8xl text-white relative">
             <motion.span 
               className="relative inline-block"
               animate={{
                 textShadow: [
-                  "0 0 20px #60A5FA, 0 0 40px #A78BFA, 0 0 60px #F472B6",
-                  "0 0 40px #34D399, 0 0 60px #F59E0B, 0 0 80px #EF4444",
-                  "0 0 20px #60A5FA, 0 0 40px #A78BFA, 0 0 60px #F472B6"
+                  "0 0 20px #FF6B6B, 0 0 40px #4ECDC4, 0 0 60px #45B7D1",
+                  "0 0 40px #26D0CE, 0 0 60px #FF8A65, 0 0 80px #AB47BC",
+                  "0 0 20px #FF6B6B, 0 0 40px #4ECDC4, 0 0 60px #45B7D1"
                 ]
               }}
               transition={{ duration: 4, repeat: Infinity }}
             >
-              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span 
+                className="bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Find Your{" "}
               </span>
             </motion.span>
@@ -466,46 +472,38 @@ const HeroSection = () => {
                     scale: 1.5,
                     rotateX: 90
                   }}
-                  transition={{ 
-                    duration: 0.8,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 20
-                  }}
                   className="inline-block relative"
                   style={{
-                    background: 'linear-gradient(45deg, #60A5FA, #34D399, #F59E0B, #F472B6, #A78BFA)',
+                    background: 'linear-gradient(45deg, #FF6B6B, #26D0CE, #FFD54F, #AB47BC, #4ECDC4)',
                     backgroundSize: '400% 400%',
-                    animation: 'gradient-shift 4s ease infinite',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: 'drop-shadow(0 0 30px rgba(96, 165, 250, 0.5))',
+                    filter: 'drop-shadow(0 0 30px rgba(255, 107, 107, 0.5))',
                   }}
                 >
                   {displayText}
                   <motion.span
                     animate={{ opacity: [1, 0] }}
                     transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-                    className="ml-2 border-r-4 border-cyan-400 inline-block h-[0.8em] align-middle"
+                    className="ml-2 border-r-4 border-cyan-300 inline-block h-[0.8em] align-middle"
                   />
                 </motion.span>
               </AnimatePresence>
             </span>
           </h1>
 
-          {/* Subtitle with Interactive Glow */}
+          {/* Subtitle with vibrant glow */}
           <motion.p 
-            className="mx-auto mb-16 max-w-3xl text-xl text-white md:text-2xl lg:text-3xl relative cursor-pointer"
+            className="mx-auto mb-16 max-w-3xl text-xl text-white md:text-2xl lg:text-3xl relative cursor-pointer font-medium"
             whileHover={{
               scale: 1.05,
-              textShadow: "0 0 30px rgba(255, 255, 255, 0.8)",
+              textShadow: "0 0 30px rgba(255, 255, 255, 0.9)",
             }}
             animate={{
               textShadow: [
-                '0 0 10px rgba(59, 130, 246, 0.5)',
-                '0 0 20px rgba(59, 130, 246, 0.8)',
-                '0 0 10px rgba(59, 130, 246, 0.5)',
+                '0 0 15px rgba(255, 107, 107, 0.6)',
+                '0 0 25px rgba(78, 205, 196, 0.8)',
+                '0 0 15px rgba(255, 107, 107, 0.6)',
               ]
             }}
             transition={{ duration: 3, repeat: Infinity }}
@@ -514,7 +512,7 @@ const HeroSection = () => {
           </motion.p>
         </motion.div>
 
-        {/* Enhanced Search Form with Interactions */}
+        {/* Enhanced Search Form */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -522,13 +520,16 @@ const HeroSection = () => {
         >
           <form 
             onSubmit={handleSearch}
-            className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl bg-white/10 backdrop-blur-2xl p-10 shadow-2xl border border-white/30 sm:p-10 md:flex-row hover:bg-white/15 transition-all duration-500 relative overflow-hidden group"
+            className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl bg-white/15 backdrop-blur-2xl p-10 shadow-2xl border-2 border-white/40 sm:p-10 md:flex-row hover:bg-white/20 transition-all duration-500 relative overflow-hidden group"
+            style={{
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 50px rgba(255, 107, 107, 0.1)'
+            }}
           >
             {/* Animated Border */}
             <motion.div
               className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100"
               style={{
-                background: 'linear-gradient(45deg, #60A5FA, #A78BFA, #F472B6, #34D399)',
+                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #26D0CE)',
                 backgroundSize: '400% 400%',
               }}
               animate={{
@@ -537,20 +538,22 @@ const HeroSection = () => {
               transition={{ duration: 3, repeat: Infinity }}
             />
             
+            {/* Search Input */}
             <div className="flex-1 relative z-10">
               <Input
                 type="text"
                 placeholder="Search by location, keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-16 w-full pl-14 bg-white/95 backdrop-blur-sm text-xl border-0 shadow-inner text-gray-800 placeholder:text-gray-500 rounded-2xl hover:bg-white transition-all duration-300"
+                className="h-16 w-full pl-14 bg-white/98 backdrop-blur-sm text-xl border-0 shadow-inner text-gray-800 placeholder:text-gray-500 rounded-2xl hover:bg-white transition-all duration-300 font-medium"
               />
-              <Search className="absolute left-5 top-5 h-6 w-6 text-primary" />
+              <Search className="absolute left-5 top-5 h-6 w-6 text-blue-600" />
             </div>
             
+            {/* Property Type Select */}
             <div className="w-full md:w-64 relative z-10">
               <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger className="h-16 w-full bg-white/95 backdrop-blur-sm text-xl border-0 shadow-inner text-gray-800 rounded-2xl hover:bg-white transition-all duration-300">
+                <SelectTrigger className="h-16 w-full bg-white/98 backdrop-blur-sm text-xl border-0 shadow-inner text-gray-800 rounded-2xl hover:bg-white transition-all duration-300 font-medium">
                   <SelectValue placeholder="Property Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -561,6 +564,7 @@ const HeroSection = () => {
               </Select>
             </div>
             
+            {/* Search Button */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -568,8 +572,12 @@ const HeroSection = () => {
             >
               <Button 
                 type="submit" 
-                className="h-16 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 text-xl shadow-2xl shadow-cyan-500/25 text-white font-bold px-10 rounded-2xl relative overflow-hidden group"
+                className="h-16 text-xl shadow-2xl text-white font-bold px-10 rounded-2xl relative overflow-hidden group border-0"
                 size="lg"
+                style={{
+                  background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                  boxShadow: '0 10px 25px rgba(255, 107, 107, 0.4)'
+                }}
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
@@ -590,173 +598,65 @@ const HeroSection = () => {
           </form>
         </motion.div>
         
-        {/* Enhanced Features and Popular Searches */}
+        {/* Popular searches with vibrant colors */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
           className="mt-12"
         >
-          {/* Features list */}
-          <div className="mb-10 flex flex-wrap justify-center gap-3 text-sm text-white md:text-base">
-            {["Verified Properties", "No Hidden Fees", "Top Locations", "Support 24/7"].map((item, i) => (
-              <motion.div 
-                key={i} 
-                className="flex items-center bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 cursor-pointer"
-                whileHover={{ scale: 1.05, y: -2 }}
-                animate={{
-                  boxShadow: [
-                    "0 0 10px rgba(255, 255, 255, 0.2)",
-                    "0 0 20px rgba(255, 255, 255, 0.4)",
-                    "0 0 10px rgba(255, 255, 255, 0.2)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity, delay: i * 0.2 }}
-              >
-                <CheckCircle size={16} className="mr-2 text-cyan-400" />
-                <span className="text-white font-medium">{item}</span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Popular searches with arrows */}
           <div className="mt-10 flex flex-wrap justify-center gap-4 text-sm text-blue-100 md:text-base">
-            <div className="popular-searches-title mr-2 text-white font-medium">Popular:</div>
+            <div className="popular-searches-title mr-2 text-white font-bold text-lg">Popular:</div>
             {[
-              { text: "Apartments for Rent", icon: Building, search: "apartment", type: "hire" },
-              { text: "Houses for Sale", icon: HomeIcon, search: "house", type: "sale" },
-              { text: "Luxury Properties", icon: MapPin, search: "luxury", type: "all" }
+              { text: "Apartments for Rent", icon: Building, search: "apartment", type: "hire", color: "#FF6B6B" },
+              { text: "Houses for Sale", icon: HomeIcon, search: "house", type: "sale", color: "#4ECDC4" },
+              { text: "Luxury Properties", icon: MapPin, search: "luxury", type: "all", color: "#45B7D1" }
             ].map((item, i) => (
               <motion.button 
                 key={i}
                 onClick={() => navigate(`/properties?search=${item.search}&type=${item.type}`)} 
-                className="flex items-center hover:text-white bg-white/10 backdrop-blur-md px-6 py-3 rounded-full hover:bg-white/20 transition-all duration-300 text-white font-medium border border-white/20 relative overflow-hidden group"
+                className="flex items-center text-white font-semibold border-2 relative overflow-hidden group px-6 py-3 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor: item.color + '20',
+                  borderColor: item.color,
+                  boxShadow: `0 5px 15px ${item.color}30`
+                }}
                 whileHover={{ scale: 1.05, y: -2 }}
                 animate={{
-                  borderColor: [
-                    "rgba(255, 255, 255, 0.2)",
-                    "rgba(96, 165, 250, 0.5)",
-                    "rgba(255, 255, 255, 0.2)"
+                  boxShadow: [
+                    `0 5px 15px ${item.color}30`,
+                    `0 10px 25px ${item.color}50`,
+                    `0 5px 15px ${item.color}30`
                   ]
                 }}
-                transition={{ duration: 4, repeat: Infinity, delay: i * 0.3 }}
+                transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
               >
-                <item.icon size={16} className="mr-2" />
+                <item.icon size={18} className="mr-2" style={{ color: item.color }} />
                 {item.text}
                 <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                
-                {/* Hover effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100"
-                  transition={{ duration: 0.3 }}
-                />
               </motion.button>
             ))}
           </div>
-          
-          {/* CTA Buttons with Enhanced Animations */}
-          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                onClick={() => navigate("/properties?type=sale")} 
-                variant="secondary"
-                size="lg" 
-                className="group text-lg px-8 py-4 transition-all duration-300 shadow-lg flex-1 sm:flex-none min-w-[200px] text-gray-800 font-semibold relative overflow-hidden bg-white hover:bg-gray-50"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100"
-                  transition={{ duration: 0.3 }}
-                />
-                <span className="relative z-10">Browse Properties</span>
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 relative z-10" />
-              </Button>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                onClick={() => navigate("/register")} 
-                variant="outline" 
-                size="lg" 
-                className="border-2 border-white/80 text-white hover:bg-white/20 hover:text-white hover:border-white text-lg px-8 py-4 transition-all duration-300 flex-1 sm:flex-none min-w-[200px] font-semibold relative overflow-hidden group"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100"
-                  transition={{ duration: 0.3 }}
-                />
-                <span className="relative z-10">List Your Property</span>
-              </Button>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Enhanced Wave Divider */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-0 z-30">
-        <motion.svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 1200 120" 
-          preserveAspectRatio="none" 
-          className="relative block h-[80px] w-full"
-          animate={{
-            x: [0, -50, 0],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="50%" stopColor="#f8fafc" />
-              <stop offset="100%" stopColor="#ffffff" />
-            </linearGradient>
-          </defs>
-          <path 
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.11,130.83,141.14,213.2,141.14,329.17,141.14,404.67,91.45,521.39,56.44Z" 
-            fill="url(#waveGradient)"
-          />
-        </motion.svg>
+        </div>
       </div>
 
       {/* Enhanced CSS Animations */}
       <style dangerouslySetInnerHTML={{
         __html: `
-          @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            25% { background-position: 100% 50%; }
-            50% { background-position: 100% 100%; }
-            75% { background-position: 0% 100%; }
-            100% { background-position: 0% 50%; }
-          }
-          
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-          }
-          
-          @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(96, 165, 250, 0.8); }
-          }
-          
           body {
-            cursor: none;
+            cursor: none !important;
           }
           
           * {
             cursor: none !important;
           }
           
-          button, a, input, select {
-            cursor: pointer !important;
+          button, a, input, select, [role="button"] {
+            cursor: none !important;
+          }
+          
+          button:hover, a:hover, input:hover, select:hover, [role="button"]:hover {
+            cursor: none !important;
           }
         `
       }} />
