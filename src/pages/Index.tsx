@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import FeaturedProperties from "@/components/FeaturedProperties";
@@ -16,11 +15,13 @@ import {
   Shield,
   Clock,
   MapPin,
-  Heart
+  Heart,
+  Sparkles,
+  Zap,
+  Award
 } from "lucide-react";
 
 const Index = () => {
-  // Add scroll animation for elements
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -45,26 +46,54 @@ const Index = () => {
   }, []);
 
   return (
-    <div>
+    <div className="relative overflow-hidden">
       <HeroSection />
       <FeaturedProperties />
       
-      {/* How it works section - With improved design */}
-      <section className="py-24 md:py-32 bg-gradient-to-b from-blue-50 to-background">
-        <div className="container px-4">
-          <div className="mb-16 text-center animate-on-scroll opacity-0 translate-y-4 transition-all duration-700">
-            <span className="inline-block mb-3 px-4 py-2 bg-blue-100 text-primary rounded-full text-sm font-medium">
-              Simplified Process
-            </span>
-            <h2 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
-              How It <span className="text-primary">Works</span>
+      {/* Enhanced How it works section */}
+      <section className="py-32 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0">
+          <motion.div
+            className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-2xl"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-3xl"
+            animate={{
+              scale: [1.2, 0.8, 1.2],
+              opacity: [0.2, 0.6, 0.2],
+            }}
+            transition={{ duration: 10, repeat: Infinity }}
+          />
+        </div>
+
+        <div className="container px-4 relative z-10">
+          <motion.div 
+            className="mb-20 text-center animate-on-scroll opacity-0 translate-y-4 transition-all duration-700"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.span 
+              className="inline-block mb-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-full text-sm font-bold shadow-lg"
+              whileHover={{ scale: 1.05 }}
+            >
+              ✨ Simplified Process
+            </motion.span>
+            <h2 className="mb-6 text-4xl font-black md:text-6xl lg:text-7xl bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 bg-clip-text text-transparent">
+              How It <span className="bg-gradient-to-r from-cyan-500 to-purple-600 bg-clip-text text-transparent">Works</span>
             </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground text-lg">
+            <p className="mx-auto max-w-3xl text-gray-600 text-xl md:text-2xl">
               Find your dream property in just a few simple steps
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
             {[
               {
                 icon: Home,
@@ -72,7 +101,9 @@ const Index = () => {
                 description: "Explore thousands of properties tailored to your preferences across the country",
                 delay: "delay-100",
                 link: "/properties",
-                linkText: "Start Browsing"
+                linkText: "Start Browsing",
+                color: "from-cyan-500 to-blue-600",
+                bgColor: "from-cyan-50 to-blue-50"
               },
               {
                 icon: MessageSquare,
@@ -80,7 +111,9 @@ const Index = () => {
                 description: "Connect directly with property owners and agents to schedule viewings or ask questions",
                 delay: "delay-200",
                 link: "/register",
-                linkText: "Create Account"
+                linkText: "Create Account",
+                color: "from-purple-500 to-pink-600",
+                bgColor: "from-purple-50 to-pink-50"
               },
               {
                 icon: Heart,
@@ -88,30 +121,49 @@ const Index = () => {
                 description: "Save your favorites, compare options, and find the perfect property that feels like home",
                 delay: "delay-300",
                 link: "/about",
-                linkText: "Learn More"
+                linkText: "Learn More",
+                color: "from-pink-500 to-red-600",
+                bgColor: "from-pink-50 to-red-50"
               }
             ].map((item, i) => (
-              <div 
+              <motion.div 
                 key={i} 
-                className={`animate-on-scroll opacity-0 translate-y-4 transition-all duration-700 ${item.delay} rounded-2xl bg-white border border-border p-8 text-center shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300 group`}
+                className={`animate-on-scroll opacity-0 translate-y-4 transition-all duration-700 ${item.delay} rounded-3xl bg-gradient-to-br ${item.bgColor} border-2 border-white/50 p-8 text-center shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-500 group relative overflow-hidden`}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.2 }}
+                whileHover={{ y: -10 }}
               >
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-all duration-300">
-                  <item.icon className="h-10 w-10" />
-                </div>
-                <h3 className="mb-4 text-2xl font-semibold">{item.title}</h3>
-                <p className="mb-6 text-muted-foreground">
+                {/* Animated Background */}
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+                
+                <motion.div 
+                  className={`mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br ${item.color} text-white shadow-2xl group-hover:scale-110 transition-all duration-300`}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <item.icon className="h-12 w-12" />
+                </motion.div>
+                <h3 className="mb-6 text-3xl font-bold text-gray-900">{item.title}</h3>
+                <p className="mb-8 text-gray-600 text-lg leading-relaxed">
                   {item.description}
                 </p>
                 <div className="mt-auto">
                   <Link 
                     to={item.link} 
-                    className="inline-flex items-center text-primary font-medium hover:underline group"
+                    className={`inline-flex items-center bg-gradient-to-r ${item.color} text-white font-bold px-6 py-3 rounded-full hover:shadow-xl transition-all duration-300 group-hover:scale-105`}
                   >
                     {item.linkText}
-                    <ArrowRight className="ml-1 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1" />
+                    <ArrowRight className="ml-2 h-5 w-5 transform transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
