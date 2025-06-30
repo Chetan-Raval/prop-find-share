@@ -33,17 +33,23 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTitleIndex((prevIndex) => (prevIndex + 1) % titles.length);
-    }, 3000); // Change every 3 seconds
+    }, 4000); // Slower transition for smoother effect
 
     return () => clearInterval(interval);
   }, [titles.length]);
 
   return (
-    <div className="hero-section relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="hero-section relative flex min-h-screen items-center justify-center overflow-hidden">
       
-      {/* Simple Background */}
+      {/* Beautiful Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 opacity-30 bg-gradient-to-br from-blue-100/50 to-purple-100/50" />
+        <img 
+          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80"
+          alt="Beautiful modern home"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent" />
       </div>
 
       {/* Main Content */}
@@ -52,31 +58,41 @@ const HeroSection = () => {
       }`}>
         
         <div className="opacity-100 translate-y-0 transition-opacity duration-1000 delay-300">
-          {/* Main Heading with Text Swapping Animation */}
-          <h1 className="mb-8 text-4xl font-bold md:text-6xl lg:text-7xl text-gray-800 leading-tight">
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          {/* Main Heading with Smooth Text Swapping Animation */}
+          <h1 className="mb-8 text-4xl font-bold md:text-6xl lg:text-7xl text-white leading-tight">
+            <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
               Find Your{" "}
             </span>
             <br />
-            <span 
-              key={currentTitleIndex}
-              className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent inline-block hero-title-animation"
-            >
-              {titles[currentTitleIndex]}
-            </span>
+            <div className="relative inline-block h-[1.2em] overflow-hidden">
+              {titles.map((title, index) => (
+                <span 
+                  key={index}
+                  className={`absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent transition-all duration-1000 ease-in-out ${
+                    index === currentTitleIndex 
+                      ? 'opacity-100 translate-y-0' 
+                      : index === (currentTitleIndex - 1 + titles.length) % titles.length
+                        ? 'opacity-0 -translate-y-full'
+                        : 'opacity-0 translate-y-full'
+                  }`}
+                >
+                  {title}
+                </span>
+              ))}
+            </div>
           </h1>
 
           {/* Subtitle */}
-          <p className="mx-auto mb-12 max-w-2xl text-lg text-gray-600 md:text-xl font-medium">
+          <p className="mx-auto mb-12 max-w-2xl text-lg text-blue-100 md:text-xl font-medium">
             Your perfect property is just a click away. Explore thousands of listings curated just for you.
           </p>
         </div>
 
-        {/* Search Form - Simple Design */}
+        {/* Search Form - Enhanced Design */}
         <div className="opacity-100 translate-y-0 transition-opacity duration-800 delay-800">
           <form 
             onSubmit={handleSearch}
-            className="mx-auto flex max-w-4xl flex-col gap-4 rounded-2xl bg-white/90 backdrop-blur-sm p-6 shadow-xl border border-white/50 md:flex-row hover:shadow-2xl transition-all duration-300"
+            className="mx-auto flex max-w-4xl flex-col gap-4 rounded-2xl bg-white/95 backdrop-blur-lg p-6 shadow-2xl border border-white/20 md:flex-row hover:shadow-3xl transition-all duration-300"
           >
             {/* Search Input */}
             <div className="flex-1 relative">
@@ -85,7 +101,7 @@ const HeroSection = () => {
                 placeholder="Search by location, keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-12 w-full pl-12 bg-white text-lg border-gray-200 text-gray-800 placeholder:text-gray-500 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="h-12 w-full pl-12 bg-white text-lg border-gray-200 text-gray-800 placeholder:text-gray-500 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               />
               <Search className="absolute left-4 top-3 h-6 w-6 text-blue-500" />
             </div>
@@ -93,7 +109,7 @@ const HeroSection = () => {
             {/* Property Type Select */}
             <div className="w-full md:w-48">
               <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger className="h-12 w-full bg-white text-lg border-gray-200 text-gray-800 rounded-xl focus:ring-2 focus:ring-blue-500">
+                <SelectTrigger className="h-12 w-full bg-white text-lg border-gray-200 text-gray-800 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm">
                   <SelectValue placeholder="Property Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -107,7 +123,7 @@ const HeroSection = () => {
             {/* Search Button */}
             <Button 
               type="submit" 
-              className="h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 rounded-xl shadow-lg transition-all duration-300 hover:scale-105"
+              className="h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               size="lg"
             >
               <Search className="mr-2 h-5 w-5" />
@@ -117,10 +133,10 @@ const HeroSection = () => {
           </form>
         </div>
         
-        {/* Popular searches - Simple */}
+        {/* Popular searches */}
         <div className="opacity-100 translate-y-0 transition-opacity duration-800 delay-900 mt-8">
           <div className="flex flex-wrap justify-center gap-3 text-sm md:text-base">
-            <div className="text-gray-600 font-medium mr-2">Popular:</div>
+            <div className="text-blue-200 font-medium mr-2">Popular:</div>
             {[
               { text: "Apartments for Rent", search: "apartment", type: "hire" },
               { text: "Houses for Sale", search: "house", type: "sale" },
@@ -129,7 +145,7 @@ const HeroSection = () => {
               <button 
                 key={i}
                 onClick={() => navigate(`/properties?search=${item.search}&type=${item.type}`)} 
-                className="flex items-center text-gray-700 hover:text-white bg-white/70 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 border border-gray-200 hover:border-transparent px-4 py-2 rounded-full transition-all duration-300 shadow-sm hover:shadow-md"
+                className="flex items-center text-white hover:text-blue-100 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/40 px-4 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 {item.text}
                 <ArrowRight size={14} className="ml-1" />

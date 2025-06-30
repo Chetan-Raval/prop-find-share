@@ -130,22 +130,6 @@
   }
 }
 
-/* Hero title animation for text swapping */
-@keyframes heroTitleFadeInOut {
-  0%, 20% { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-  25%, 75% { 
-    opacity: 0; 
-    transform: translateY(-10px); 
-  }
-  80%, 100% { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
 .fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -160,10 +144,6 @@
 
 .pulse-glow {
   animation: pulseGlow 2s infinite;
-}
-
-.hero-title-animation {
-  animation: heroTitleFadeInOut 3s ease-in-out infinite;
 }
 
 /* Mobile sidebar styles */
@@ -199,13 +179,13 @@
 }
 
 .hero-section {
-  @apply relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 text-white;
-  min-height: 500px;
+  @apply relative overflow-hidden;
+  min-height: 100vh;
 }
 
 @media (max-width: 640px) {
   .hero-section {
-    min-height: 400px;
+    min-height: 100vh;
   }
 }
 
