@@ -60,10 +60,7 @@ const HeroSection = () => {
             <br />
             <span 
               key={currentTitleIndex}
-              className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent inline-block animate-fade-in"
-              style={{
-                animation: 'fadeInOut 3s ease-in-out infinite'
-              }}
+              className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent inline-block hero-title-animation"
             >
               {titles[currentTitleIndex]}
             </span>
@@ -141,14 +138,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInOut {
-          0%, 20% { opacity: 1; transform: translateY(0); }
-          25%, 75% { opacity: 0; transform: translateY(-10px); }
-          80%, 100% { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 };
