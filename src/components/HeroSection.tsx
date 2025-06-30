@@ -11,6 +11,15 @@ const HeroSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyType, setPropertyType] = useState("all");
   const [isVisible, setIsVisible] = useState(false);
+  const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
+
+  const titles = [
+    "Dream Home",
+    "Perfect Property", 
+    "Ideal Space",
+    "Next Investment",
+    "Future Home"
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +29,14 @@ const HeroSection = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTitleIndex((prevIndex) => (prevIndex + 1) % titles.length);
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [titles.length]);
 
   return (
     <div className="hero-section relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -35,14 +52,20 @@ const HeroSection = () => {
       }`}>
         
         <div className="opacity-100 translate-y-0 transition-opacity duration-1000 delay-300">
-          {/* Main Heading - Simple and Clean */}
+          {/* Main Heading with Text Swapping Animation */}
           <h1 className="mb-8 text-4xl font-bold md:text-6xl lg:text-7xl text-gray-800 leading-tight">
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Find Your{" "}
             </span>
             <br />
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-              Dream Home
+            <span 
+              key={currentTitleIndex}
+              className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent inline-block animate-fade-in"
+              style={{
+                animation: 'fadeInOut 3s ease-in-out infinite'
+              }}
+            >
+              {titles[currentTitleIndex]}
             </span>
           </h1>
 
@@ -118,6 +141,14 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInOut {
+          0%, 20% { opacity: 1; transform: translateY(0); }
+          25%, 75% { opacity: 0; transform: translateY(-10px); }
+          80%, 100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };
