@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import FeaturedProperties from "@/components/FeaturedProperties";
@@ -120,7 +121,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Features Section - New */}
+      {/* Features Section */}
       <section className="py-24 bg-gradient-to-b from-background to-blue-50/50">
         <div className="container px-4">
           <div className="mb-16 flex flex-col md:flex-row items-center">
@@ -177,7 +178,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonials Section - Enhanced */}
+      {/* Testimonials Section */}
       <section className="py-24 bg-gradient-to-b from-blue-50/50 to-background">
         <div className="container px-4">
           <div className="text-center mb-16 animate-on-scroll opacity-0 translate-y-4 transition-all duration-700">
@@ -193,7 +194,6 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Testimonial cards with enhanced design */}
             {[
               {
                 name: "Sarah Johnson",
@@ -241,7 +241,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* CTA Section - Completely redesigned */}
+      {/* CTA Section */}
       <section className="py-16 md:py-24">
         <div className="container px-4">
           <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-10 md:p-16 text-white animate-on-scroll opacity-0 translate-y-4 transition-all duration-700 relative">
@@ -250,30 +250,8 @@ const Index = () => {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -mb-32 -ml-32 blur-xl"></div>
             
             {/* Decorative floating elements */}
-            <motion.div 
-              className="absolute right-10 top-10 w-20 h-20 bg-white/10 rounded-full"
-              animate={{
-                y: [0, 15, 0],
-                opacity: [0.5, 0.8, 0.5]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            />
-            <motion.div 
-              className="absolute left-1/4 bottom-10 w-12 h-12 bg-white/10 rounded-full"
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.3, 0.6, 0.3]
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            />
+            <div className="absolute right-10 top-10 w-20 h-20 bg-white/10 rounded-full"></div>
+            <div className="absolute left-1/4 bottom-10 w-12 h-12 bg-white/10 rounded-full"></div>
             
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
               <div className="md:max-w-xl">
@@ -329,7 +307,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* App Download Section - New */}
+      {/* App Download Section */}
       <section className="py-16 md:py-24 bg-blue-50/30">
         <div className="container px-4">
           <div className="flex flex-col md:flex-row items-center gap-10">
