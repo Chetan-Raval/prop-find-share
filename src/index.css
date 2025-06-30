@@ -130,6 +130,29 @@
   }
 }
 
+/* Hero section text animation */
+@keyframes textSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes textSlideDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
 .fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -144,6 +167,14 @@
 
 .pulse-glow {
   animation: pulseGlow 2s infinite;
+}
+
+.text-slide-up {
+  animation: textSlideUp 1s ease-out forwards;
+}
+
+.text-slide-down {
+  animation: textSlideDown 1s ease-out forwards;
 }
 
 /* Mobile sidebar styles */

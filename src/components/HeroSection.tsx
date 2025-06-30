@@ -33,7 +33,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTitleIndex((prevIndex) => (prevIndex + 1) % titles.length);
-    }, 4000); // Slower transition for smoother effect
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [titles.length]);
@@ -44,12 +44,12 @@ const HeroSection = () => {
       {/* Beautiful Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80"
-          alt="Beautiful modern home"
+          src="/lovable-uploads/a5422e60-0fbf-481d-814b-dab88d48f699.png"
+          alt="Beautiful home with model house"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent" />
       </div>
 
       {/* Main Content */}
@@ -68,13 +68,16 @@ const HeroSection = () => {
               {titles.map((title, index) => (
                 <span 
                   key={index}
-                  className={`absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent transition-all duration-1000 ease-in-out ${
+                  className={`absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent transition-all duration-1000 ease-in-out transform ${
                     index === currentTitleIndex 
                       ? 'opacity-100 translate-y-0' 
                       : index === (currentTitleIndex - 1 + titles.length) % titles.length
                         ? 'opacity-0 -translate-y-full'
                         : 'opacity-0 translate-y-full'
                   }`}
+                  style={{
+                    transitionDelay: index === currentTitleIndex ? '200ms' : '0ms'
+                  }}
                 >
                   {title}
                 </span>
