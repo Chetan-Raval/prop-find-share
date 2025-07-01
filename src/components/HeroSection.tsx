@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -33,7 +32,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTitleIndex((prevIndex) => (prevIndex + 1) % titles.length);
-    }, 3500);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [titles.length]);
@@ -93,15 +92,15 @@ const HeroSection = () => {
 
           {/* Enhanced Main Heading with Perfect Text Animation */}
           <h1 className="mb-8 text-4xl font-bold md:text-6xl lg:text-7xl text-white leading-tight">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-white font-bold">
               Find Your{" "}
             </span>
             <br />
-            <div className="relative inline-block h-[1.3em] overflow-hidden mt-2">
+            <div className="relative inline-block h-[1.5em] overflow-hidden mt-4">
               {titles.map((title, index) => (
                 <span 
                   key={index}
-                  className={`absolute inset-0 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent font-bold transition-all duration-1000 ease-in-out transform ${
+                  className={`absolute inset-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 font-bold transition-all duration-1000 ease-in-out transform ${
                     index === currentTitleIndex 
                       ? 'opacity-100 translate-y-0' 
                       : index < currentTitleIndex
@@ -109,7 +108,7 @@ const HeroSection = () => {
                         : 'opacity-0 translate-y-full'
                   }`}
                   style={{
-                    transitionDelay: index === currentTitleIndex ? '200ms' : '0ms'
+                    transitionDelay: index === currentTitleIndex ? '100ms' : '0ms'
                   }}
                 >
                   {title}
