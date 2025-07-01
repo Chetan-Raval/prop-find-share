@@ -91,7 +91,7 @@ const HeroSection = () => {
             Since 2015 - Your Trusted Property Partner
           </div>
 
-          {/* Enhanced Main Heading with Perfect Text Animation */}
+          {/* Enhanced Main Heading with Beautiful Animated Text */}
           <h1 className="mb-8 text-4xl font-bold md:text-6xl lg:text-7xl text-white leading-tight">
             <span className="text-white font-bold">
               Find Your{" "}
@@ -101,16 +101,22 @@ const HeroSection = () => {
               {titles.map((title, index) => (
                 <span 
                   key={index}
-                  className={`absolute inset-0 text-white font-bold transition-all duration-1000 ease-in-out transform ${
+                  className={`absolute inset-0 font-bold transition-all duration-1000 ease-in-out transform ${
                     index === currentTitleIndex 
-                      ? 'opacity-100 translate-y-0' 
+                      ? 'opacity-100 translate-y-0 text-white' 
                       : index < currentTitleIndex
-                        ? 'opacity-0 -translate-y-full'
-                        : 'opacity-0 translate-y-full'
+                        ? 'opacity-0 -translate-y-full text-white'
+                        : 'opacity-0 translate-y-full text-white'
                   }`}
                   style={{
-                    transitionDelay: index === currentTitleIndex ? '100ms' : '0ms',
-                    textShadow: '0 0 20px rgba(56, 189, 248, 0.5)'
+                    transitionDelay: index === currentTitleIndex ? '200ms' : '0ms',
+                    textShadow: '0 0 30px rgba(56, 189, 248, 0.8), 0 0 60px rgba(147, 51, 234, 0.4)',
+                    filter: 'brightness(1.1)',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #ffffff 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'white',
+                    fontSize: 'inherit',
+                    fontWeight: 'bold'
                   }}
                 >
                   {title}
