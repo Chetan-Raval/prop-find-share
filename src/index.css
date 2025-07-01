@@ -87,7 +87,7 @@
   }
 }
 
-/* Animation classes */
+/* Enhanced Animation classes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -130,7 +130,7 @@
   }
 }
 
-/* Enhanced hero section animations */
+/* Smooth text animation keyframes */
 @keyframes textSlideUp {
   0% {
     opacity: 0;
@@ -153,6 +153,28 @@
   }
 }
 
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes smoothFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -171,6 +193,7 @@
   }
 }
 
+/* Enhanced animation classes */
 .fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -188,11 +211,11 @@
 }
 
 .text-slide-up {
-  animation: textSlideUp 0.8s ease-out forwards;
+  animation: smoothFadeIn 1s ease-out forwards;
 }
 
 .text-slide-down {
-  animation: textSlideDown 0.8s ease-out forwards;
+  animation: smoothFadeOut 1s ease-out forwards;
 }
 
 .float {
@@ -238,7 +261,7 @@
   }
 }
 
-/* Mobile sidebar styles */
+/* Enhanced mobile sidebar styles */
 .mobile-sidebar-link {
   @apply relative flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all;
   @apply hover:bg-primary/10;
@@ -270,7 +293,7 @@
   @apply scale-105;
 }
 
-/* New interactive elements */
+/* Enhanced interactive elements */
 .animate-on-scroll.animate-in {
   opacity: 1 !important;
   transform: translateY(0) !important;
@@ -296,7 +319,7 @@
   box-shadow: 0 0 15px 5px rgba(var(--primary), 0.2);
 }
 
-/* Animated background for hero section */
+/* Enhanced animated background */
 .animated-bg {
   animation: backgroundMove 30s ease infinite alternate;
   background-size: 400% 400%;
