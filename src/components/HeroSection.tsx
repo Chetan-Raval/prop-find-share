@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ const HeroSection = () => {
               {titles.map((title, index) => (
                 <span 
                   key={index}
-                  className={`absolute inset-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 font-bold transition-all duration-1000 ease-in-out transform ${
+                  className={`absolute inset-0 text-white font-bold transition-all duration-1000 ease-in-out transform ${
                     index === currentTitleIndex 
                       ? 'opacity-100 translate-y-0' 
                       : index < currentTitleIndex
@@ -108,7 +109,8 @@ const HeroSection = () => {
                         : 'opacity-0 translate-y-full'
                   }`}
                   style={{
-                    transitionDelay: index === currentTitleIndex ? '100ms' : '0ms'
+                    transitionDelay: index === currentTitleIndex ? '100ms' : '0ms',
+                    textShadow: '0 0 20px rgba(56, 189, 248, 0.5)'
                   }}
                 >
                   {title}
