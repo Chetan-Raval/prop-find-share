@@ -87,7 +87,7 @@
   }
 }
 
-/* Enhanced Animation classes */
+/* Animation classes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -130,70 +130,6 @@
   }
 }
 
-/* Smooth text animation keyframes */
-@keyframes textSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes textSlideDown {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-100%);
-  }
-}
-
-@keyframes smoothFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes smoothFadeOut {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-30px) scale(0.95);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Enhanced animation classes */
 .fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -210,58 +146,7 @@
   animation: pulseGlow 2s infinite;
 }
 
-.text-slide-up {
-  animation: smoothFadeIn 1s ease-out forwards;
-}
-
-.text-slide-down {
-  animation: smoothFadeOut 1s ease-out forwards;
-}
-
-.float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.glow {
-  animation: glow 3s ease-in-out infinite;
-}
-
-/* Hero section specific styles */
-.hero-section {
-  @apply relative overflow-hidden;
-  min-height: 100vh;
-}
-
-/* Responsive design improvements */
-@media (max-width: 640px) {
-  .hero-section {
-    min-height: 100vh;
-    padding: 1rem;
-  }
-  
-  .hero-section h1 {
-    font-size: 2.5rem;
-    line-height: 1.1;
-  }
-  
-  .hero-section .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-section form {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .hero-section form > div {
-    width: 100%;
-  }
-}
-
-/* Enhanced mobile sidebar styles */
+/* Mobile sidebar styles */
 .mobile-sidebar-link {
   @apply relative flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all;
   @apply hover:bg-primary/10;
@@ -293,7 +178,18 @@
   @apply scale-105;
 }
 
-/* Enhanced interactive elements */
+.hero-section {
+  @apply relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 text-white;
+  min-height: 500px;
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    min-height: 400px;
+  }
+}
+
+/* New interactive elements */
 .animate-on-scroll.animate-in {
   opacity: 1 !important;
   transform: translateY(0) !important;
@@ -319,7 +215,7 @@
   box-shadow: 0 0 15px 5px rgba(var(--primary), 0.2);
 }
 
-/* Enhanced animated background */
+/* Animated background for hero section */
 .animated-bg {
   animation: backgroundMove 30s ease infinite alternate;
   background-size: 400% 400%;
@@ -335,22 +231,4 @@
   100% {
     background-position: 0% 50%;
   }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
 }
