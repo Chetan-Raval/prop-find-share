@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import FeaturedProperties from "@/components/FeaturedProperties";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { 
   Home, 
   MessageSquare, 
@@ -15,13 +16,11 @@ import {
   Shield,
   Clock,
   MapPin,
-  Heart,
-  Sparkles,
-  Zap,
-  Award
+  Heart
 } from "lucide-react";
 
 const Index = () => {
+  // Add scroll animation for elements
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -46,73 +45,70 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden">
+    <div>
       <HeroSection />
       <FeaturedProperties />
       
-      {/* Simple How it works section */}
-      <section className="py-32 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
-        <div className="container px-4 relative z-10">
-          <div className="mb-20 text-center">
-            <span className="inline-block mb-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-full text-sm font-bold shadow-lg">
-              ✨ Simplified Process
+      {/* How it works section - With improved design */}
+      <section className="py-24 md:py-32 bg-gradient-to-b from-blue-50 to-background">
+        <div className="container px-4">
+          <div className="mb-16 text-center animate-on-scroll opacity-0 translate-y-4 transition-all duration-700">
+            <span className="inline-block mb-3 px-4 py-2 bg-blue-100 text-primary rounded-full text-sm font-medium">
+              Simplified Process
             </span>
-            <h2 className="mb-6 text-4xl font-black md:text-6xl lg:text-7xl bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 bg-clip-text text-transparent">
-              How It <span className="bg-gradient-to-r from-cyan-500 to-purple-600 bg-clip-text text-transparent">Works</span>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
+              How It <span className="text-primary">Works</span>
             </h2>
-            <p className="mx-auto max-w-3xl text-gray-600 text-xl md:text-2xl">
+            <p className="mx-auto max-w-2xl text-muted-foreground text-lg">
               Find your dream property in just a few simple steps
             </p>
           </div>
           
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {[
               {
                 icon: Home,
                 title: "Browse Properties",
                 description: "Explore thousands of properties tailored to your preferences across the country",
+                delay: "delay-100",
                 link: "/properties",
-                linkText: "Start Browsing",
-                color: "from-cyan-500 to-blue-600",
-                bgColor: "from-cyan-50 to-blue-50"
+                linkText: "Start Browsing"
               },
               {
                 icon: MessageSquare,
                 title: "Contact Vendors",
                 description: "Connect directly with property owners and agents to schedule viewings or ask questions",
+                delay: "delay-200",
                 link: "/register",
-                linkText: "Create Account",
-                color: "from-purple-500 to-pink-600",
-                bgColor: "from-purple-50 to-pink-50"
+                linkText: "Create Account"
               },
               {
                 icon: Heart,
                 title: "Find Your Match",
                 description: "Save your favorites, compare options, and find the perfect property that feels like home",
+                delay: "delay-300",
                 link: "/about",
-                linkText: "Learn More",
-                color: "from-pink-500 to-red-600",
-                bgColor: "from-pink-50 to-red-50"
+                linkText: "Learn More"
               }
             ].map((item, i) => (
               <div 
                 key={i} 
-                className={`rounded-3xl bg-gradient-to-br ${item.bgColor} border-2 border-white/50 p-8 text-center shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden`}
+                className={`animate-on-scroll opacity-0 translate-y-4 transition-all duration-700 ${item.delay} rounded-2xl bg-white border border-border p-8 text-center shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300 group`}
               >
-                <div className={`mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br ${item.color} text-white shadow-2xl`}>
-                  <item.icon className="h-12 w-12" />
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-all duration-300">
+                  <item.icon className="h-10 w-10" />
                 </div>
-                <h3 className="mb-6 text-3xl font-bold text-gray-900">{item.title}</h3>
-                <p className="mb-8 text-gray-600 text-lg leading-relaxed">
+                <h3 className="mb-4 text-2xl font-semibold">{item.title}</h3>
+                <p className="mb-6 text-muted-foreground">
                   {item.description}
                 </p>
                 <div className="mt-auto">
                   <Link 
                     to={item.link} 
-                    className={`inline-flex items-center bg-gradient-to-r ${item.color} text-white font-bold px-6 py-3 rounded-full hover:shadow-xl transition-all duration-300`}
+                    className="inline-flex items-center text-primary font-medium hover:underline group"
                   >
                     {item.linkText}
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-1 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </div>
               </div>
@@ -121,7 +117,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Features Section */}
+      {/* Features Section - New */}
       <section className="py-24 bg-gradient-to-b from-background to-blue-50/50">
         <div className="container px-4">
           <div className="mb-16 flex flex-col md:flex-row items-center">
@@ -178,7 +174,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonials Section */}
+      {/* Testimonials Section - Enhanced */}
       <section className="py-24 bg-gradient-to-b from-blue-50/50 to-background">
         <div className="container px-4">
           <div className="text-center mb-16 animate-on-scroll opacity-0 translate-y-4 transition-all duration-700">
@@ -194,6 +190,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {/* Testimonial cards with enhanced design */}
             {[
               {
                 name: "Sarah Johnson",
@@ -241,7 +238,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* CTA Section */}
+      {/* CTA Section - Completely redesigned */}
       <section className="py-16 md:py-24">
         <div className="container px-4">
           <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-10 md:p-16 text-white animate-on-scroll opacity-0 translate-y-4 transition-all duration-700 relative">
@@ -250,8 +247,30 @@ const Index = () => {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -mb-32 -ml-32 blur-xl"></div>
             
             {/* Decorative floating elements */}
-            <div className="absolute right-10 top-10 w-20 h-20 bg-white/10 rounded-full"></div>
-            <div className="absolute left-1/4 bottom-10 w-12 h-12 bg-white/10 rounded-full"></div>
+            <motion.div 
+              className="absolute right-10 top-10 w-20 h-20 bg-white/10 rounded-full"
+              animate={{
+                y: [0, 15, 0],
+                opacity: [0.5, 0.8, 0.5]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            />
+            <motion.div 
+              className="absolute left-1/4 bottom-10 w-12 h-12 bg-white/10 rounded-full"
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.3, 0.6, 0.3]
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
               <div className="md:max-w-xl">
@@ -307,7 +326,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* App Download Section */}
+      {/* App Download Section - New */}
       <section className="py-16 md:py-24 bg-blue-50/30">
         <div className="container px-4">
           <div className="flex flex-col md:flex-row items-center gap-10">
